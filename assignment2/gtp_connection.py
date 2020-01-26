@@ -52,7 +52,7 @@ class GtpConnection():
             "gogui-analyze_commands": self.gogui_analyze_cmd,
             "genmove":self.genmove_cmd,
             "timelimit": self.timelimit_cmd,
-            "winner": self.winner_cmd
+            "solve": self.solve_cmd
 
         }
 
@@ -202,7 +202,7 @@ class GtpConnection():
             # the user's time limit is NOT within the predetermined bounds
             self.respond("Error: Argument is not within the range of [1,100]")
 
-    def winner_cmd(self, args):
+    def solve_cmd(self, args):
 
         output_winner = "unknown"
         output_move = "A1"
