@@ -182,8 +182,23 @@ class GtpConnection():
         self.respond('\n' + self.board2d())
 
     def timelimit_cmd(self, args):
-        self.timelimit = args[0]
-        self.respond()
+        seconds = None
+
+        try:
+            # attempt to turn the argument into an integer
+            seconds = int(args[0])
+        except:
+            # argument cannot be turned into an integer
+            self.respond("Error: Argument not valid, must be an integer in the bound of [1,100]")
+            return
+
+        if ((1 <= seconds) and (seconds <= 100)):
+            # the user's time limit is within the predetermined bounds
+            self.timelimit = seconds
+            self.respond()
+        else:
+            # the user's time limit is NOT within the predetermined bounds
+            self.respond("Error: Argument is not within the range of [1,100]")
 
     def komi_cmd(self, args):
         """
