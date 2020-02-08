@@ -40,7 +40,6 @@ class GtpConnection():
             "komi": self.komi_cmd,
             "version": self.version_cmd,
             "known_command": self.known_command_cmd,
-            "genmove": self.genmove_cmd,
             "list_commands": self.list_commands_cmd,
             "play": self.play_cmd,
             "legal_moves": self.legal_moves_cmd,
@@ -51,7 +50,10 @@ class GtpConnection():
             "gogui-rules_board": self.gogui_rules_board_cmd,
             "gogui-rules_final_result": self.gogui_rules_final_result_cmd,
             "gogui-analyze_commands": self.gogui_analyze_cmd,
-            "timelimit": self.timelimit_cmd
+            "genmove":self.genmove_cmd,
+            "timelimit": self.timelimit_cmd,
+            "winner": self.winner_cmd
+
         }
 
         # used for argument checking
@@ -199,6 +201,13 @@ class GtpConnection():
         else:
             # the user's time limit is NOT within the predetermined bounds
             self.respond("Error: Argument is not within the range of [1,100]")
+
+    def winner_cmd(self, args):
+
+        output_winner = "unknown"
+        output_move = "A1"
+
+        self.respond("{} {}".format(output_winner, output_move))
 
     def komi_cmd(self, args):
         """
