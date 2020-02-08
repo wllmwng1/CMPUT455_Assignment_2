@@ -2,8 +2,8 @@
 gtp_connection.py
 Module for playing games of Go using GoTextProtocol
 
-Parts of this code were originally based on the gtp module 
-in the Deep-Go project by Isaac Henrion and Amos Storkey 
+Parts of this code were originally based on the gtp module
+in the Deep-Go project by Isaac Henrion and Amos Storkey
 at the University of Edinburgh.
 """
 import traceback
@@ -23,12 +23,13 @@ class GtpConnection():
         ----------
         go_engine:
             a program that can reply to a set of GTP commandsbelow
-        board: 
+        board:
             Represents the current board state.
         """
         self._debug_mode = debug_mode
         self.go_engine = go_engine
         self.board = board
+        self.timelimit = 1
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
@@ -50,10 +51,11 @@ class GtpConnection():
             "gogui-rules_board": self.gogui_rules_board_cmd,
             "gogui-rules_final_result": self.gogui_rules_final_result_cmd,
             "gogui-analyze_commands": self.gogui_analyze_cmd
+            "timelimit": self.timelimit_cmd
         }
 
         # used for argument checking
-        # values: (required number of arguments, 
+        # values: (required number of arguments,
         #          error message on argnum failure)
         self.argmap = {
             "boardsize": (1, 'Usage: boardsize INT'),
@@ -61,18 +63,19 @@ class GtpConnection():
             "known_command": (1, 'Usage: known_command CMD_NAME'),
             "genmove": (1, 'Usage: genmove {w,b}'),
             "play": (2, 'Usage: play {b,w} MOVE'),
-            "legal_moves": (1, 'Usage: legal_moves {w,b}')
+            "legal_moves": (1, 'Usage: legal_moves {w,b}'),
+            "timelimit": (1, 'Usage: timelimit INT')
         }
-    
+
     def write(self, data):
-        stdout.write(data) 
+        stdout.write(data)
 
     def flush(self):
         stdout.flush()
 
     def start_connection(self):
         """
-        Start a GTP connection. 
+        Start a GTP connection.
         This function continuously monitors standard input for commands.
         """
         line = stdin.readline()
@@ -145,7 +148,7 @@ class GtpConnection():
 
     def board2d(self):
         return str(GoBoardUtil.get_twoD_board(self.board))
-        
+
     def protocol_version_cmd(self, args):
         """ Return the GTP protocol version being used (always 2) """
         self.respond('2')
@@ -177,6 +180,10 @@ class GtpConnection():
 
     def showboard_cmd(self, args):
         self.respond('\n' + self.board2d())
+
+    def timelimit_cmd(self, args):
+        self.timelimit = args[0]
+        self.respond()
 
     def komi_cmd(self, args):
         """
@@ -260,10 +267,10 @@ class GtpConnection():
 
     def gogui_rules_game_id_cmd(self, args):
         self.respond("NoGo")
-    
+
     def gogui_rules_board_size_cmd(self, args):
         self.respond(str(self.board.size))
-    
+
     def legal_moves_cmd(self, args):
         """
             List legal moves for color args[0] in {'b','w'}
@@ -292,11 +299,11 @@ class GtpConnection():
             gtp_moves.append(format_point(coords))
         sorted_moves = ' '.join(sorted(gtp_moves))
         self.respond(sorted_moves)
-    
+
     def gogui_rules_side_to_move_cmd(self, args):
         color = "black" if self.board.current_player == BLACK else "white"
         self.respond(color)
-    
+
     def gogui_rules_board_cmd(self, args):
         size = self.board.size
         str = ''
@@ -314,7 +321,7 @@ class GtpConnection():
                     assert False
             str += '\n'
         self.respond(str)
-    
+
     def gogui_rules_final_result_cmd(self, args):
         empties = self.board.get_empty_points()
         color = self.board.current_player
@@ -339,7 +346,7 @@ class GtpConnection():
 
 def point_to_coord(point, boardsize):
     """
-    Transform point given as board array index 
+    Transform point given as board array index
     to (row, col) coordinate representation.
     Special case: PASS is not transformed
     """
@@ -360,8 +367,8 @@ def format_point(move):
     row, col = move
     if not 0 <= row < MAXSIZE or not 0 <= col < MAXSIZE:
         raise ValueError
-    return column_letters[col - 1]+ str(row) 
-    
+    return column_letters[col - 1]+ str(row)
+
 def move_to_coord(point_str, board_size):
     """
     Convert a string point_str representing a point, as specified by GTP,
@@ -393,6 +400,6 @@ def move_to_coord(point_str, board_size):
 
 def color_to_int(c):
     """convert character to the appropriate integer code"""
-    color_to_int = {"b": BLACK , "w": WHITE, "e": EMPTY, 
+    color_to_int = {"b": BLACK , "w": WHITE, "e": EMPTY,
                     "BORDER": BORDER}
-    return color_to_int[c] 
+    return color_to_int[c]
