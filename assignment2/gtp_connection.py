@@ -30,6 +30,7 @@ class GtpConnection():
         self.go_engine = go_engine
         self.board = board
         self.timelimit = 1
+        self.tt = TranspositionTable()
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
