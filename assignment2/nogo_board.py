@@ -33,7 +33,7 @@ class NoGoBoard(object):
             legal = board_copy.play_move(point, color)
         except:
             return False
-            
+
         return legal
 
     def get_legal_moves(self, color):
@@ -92,6 +92,7 @@ class NoGoBoard(object):
         self.maxpoint = size * size + 3 * (size + 1)
         self.board = np.full(self.maxpoint, BORDER, dtype = np.int32)
         self.liberty_of = np.full(self.maxpoint, NULLPOINT, dtype = np.int32)
+        self.moves = []
         self._initialize_empty_points(self.board)
         self._initialize_neighbors()
 
@@ -109,7 +110,7 @@ class NoGoBoard(object):
         assert row >= 1
         assert row <= self.size
         return row * self.NS + 1
-        
+
     def _initialize_empty_points(self, board):
         """
         Fills points on the board with EMPTY
@@ -127,7 +128,7 @@ class NoGoBoard(object):
             if self.board[nb] != BORDER:
                 nbs.append(nb)
         return nbs
-            
+
     def _initialize_neighbors(self):
         """
         precompute neighbor array.
@@ -139,7 +140,7 @@ class NoGoBoard(object):
                 self.neighbors.append([])
             else:
                 self.neighbors.append(self._on_board_neighbors(point))
-        
+
     def is_eye(self, point, color):
         """
         Check if point is a simple eye for color
@@ -156,7 +157,7 @@ class NoGoBoard(object):
             elif self.board[d] == opp_color:
                 false_count += 1
         return false_count <= 1 - at_edge # 0 at edge, 1 in center
-    
+
     def _is_surrounded(self, point, color):
         """
         check whether empty point is surrounded by stones of color.
@@ -201,7 +202,7 @@ class NoGoBoard(object):
         """
         Find the block of given stone
         Returns a board of boolean markers which are set for
-        all the points in the block 
+        all the points in the block
         """
         marker = np.full(self.maxpoint, False, dtype = bool)
         pointstack = [stone]
@@ -220,11 +221,11 @@ class NoGoBoard(object):
     def _fast_liberty_check(self, nb_point):
         lib = self.liberty_of[nb_point]
         if lib != NULLPOINT and self.get_color(lib) == EMPTY:
-            return True # quick exit, block has a liberty  
+            return True # quick exit, block has a liberty
         if self._stone_has_liberty(nb_point):
             return True # quick exit, no need to look at whole block
         return False
-        
+
     def _detect_capture(self, nb_point):
         """
         Check whether opponent block on nb_point is captured.
@@ -234,7 +235,7 @@ class NoGoBoard(object):
             return False
         opp_block = self._block_of(nb_point)
         return not self._has_liberty(opp_block)
-    
+
     def _detect_and_process_capture(self, nb_point):
         """
         Check whether opponent block on nb_point is captured.
@@ -261,7 +262,7 @@ class NoGoBoard(object):
             raise ValueError("occupied")
         if point == self.ko_recapture:
             return False
-            
+
         # General case: deal with captures, suicide, and next ko point
         opp_color = GoBoardUtil.opponent(color)
         in_enemy_eye = self._is_surrounded(point, opp_color)
@@ -283,7 +284,13 @@ class NoGoBoard(object):
         if in_enemy_eye and len(single_captures) == 1:
             self.ko_recapture = single_captures[0]
         self.current_player = GoBoardUtil.opponent(color)
+        self.moves.append(point)
         return True
+
+    def undo_move(self):
+        point = self.moves.pop()
+        self.board[point] = EMPTY
+        self.current_player = GoBoardUtil.opponent(color)
 
     def neighbors_of_color(self, point, color):
         """ List of neighbors of point of given color """
@@ -292,33 +299,33 @@ class NoGoBoard(object):
             if self.get_color(nb) == color:
                 nbc.append(nb)
         return nbc
-        
+
     def find_neighbor_of_color(self, point, color):
         """ Return one neighbor of point of given color, or None """
         for nb in self.neighbors[point]:
             if self.get_color(nb) == color:
                 return nb
         return None
-        
+
     def _neighbors(self, point):
         """ List of all four neighbors of the point """
         return [point - 1, point + 1, point - self.NS, point + self.NS]
 
     def _diag_neighbors(self, point):
         """ List of all four diagonal neighbors of point """
-        return [point - self.NS - 1, 
-                point - self.NS + 1, 
-                point + self.NS - 1, 
+        return [point - self.NS - 1,
+                point - self.NS + 1,
+                point + self.NS - 1,
                 point + self.NS + 1]
-    
+
     def _point_to_coord(self, point):
         """
         Transform point index to row, col.
-        
+
         Arguments
         ---------
         point
-        
+
         Returns
         -------
         x , y : int
@@ -329,7 +336,32 @@ class NoGoBoard(object):
         row, col = divmod(point, self.NS)
         return row, col
 
-    
+def staticallyEvaluateForToPlay(self):
+    """
+    Evaluates wins based on current_player.
+
+    Arguments
+    ---------
+    None
+
+    Returns
+    -------
+    win : boolean
+    Whether or not the current player won.
+    """
+    legal = GoBoardUtil.generate_legal_moves(self.board, self.current_player)
+    if len(legal) == 0:
+        return False
+    else:
+        return True
+
+def code(self):
+    c = 0
+    for x in range(self.size):
+        for y in range(self.size):
+            c = c*3 + self.board[GoBoardUtil.coord_to_point(x,y,self.size)]
+    return c
+
     def display(self):
         return print(GoBoardUtil.get_twoD_board(self))
 
@@ -338,7 +370,7 @@ class NoGoBoard(object):
     #         Check whether it is legal for color to play on point, for the game of gomoku
     #         """
     #     return self.board[point] == EMPTY
-    
+
     # def play_move_gomoku(self, point, color):
     #     """
     #         Play a move of color on point, for the game of gomoku
@@ -351,7 +383,7 @@ class NoGoBoard(object):
     #     self.board[point] = color
     #     self.current_player = GoBoardUtil.opponent(color)
     #     return True
-        
+
     # def _point_direction_check_connect_gomoko(self, point, shift):
     #     """
     #     Check if the point has connect5 condition in a direction
@@ -381,7 +413,7 @@ class NoGoBoard(object):
     #             break
     #     assert count <= 5
     #     return count == 5
-    
+
     # def point_check_game_end_gomoku(self, point):
     #     """
     #         Check if the point causes the game end for the game of Gomoko.
@@ -389,32 +421,32 @@ class NoGoBoard(object):
     #     # check horizontal
     #     if self._point_direction_check_connect_gomoko(point, 1):
     #         return True
-        
+
     #     # check vertical
     #     if self._point_direction_check_connect_gomoko(point, self.NS):
     #         return True
-        
+
     #     # check y=x
     #     if self._point_direction_check_connect_gomoko(point, self.NS + 1):
     #         return True
-        
+
     #     # check y=-x
     #     if self._point_direction_check_connect_gomoko(point, self.NS - 1):
     #         return True
-        
+
     #     return False
-    
+
     # def check_game_end_gomoku(self):
     #     """
     #         Check if the game ends for the game of Gomoku.
     #         """
     #     white_points = where1d(self.board == WHITE)
     #     black_points = where1d(self.board == BLACK)
-        
+
     #     for point in white_points:
     #         if self.point_check_game_end_gomoku(point):
     #             return True, WHITE
-    
+
     #     for point in black_points:
     #         if self.point_check_game_end_gomoku(point):
     #             return True, BLACK
