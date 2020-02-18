@@ -336,37 +336,39 @@ class NoGoBoard(object):
         row, col = divmod(point, self.NS)
         return row, col
 
-def staticallyEvaluateForToPlay(self):
-    """
-    Evaluates wins based on current_player.
+    def statisticallyEvaluateForToPlay(self):
+        """
+        Evaluates wins based on current_player.
 
-    Arguments
-    ---------
-    None
+        Arguments
+        ---------
+        None
 
-    Returns
-    -------
-    win : boolean
-    Whether or not the current player won.
-    """
-    legal = GoBoardUtil.generate_legal_moves(self.board, self.current_player)
-    if len(legal) == 0:
-        return False
-    else:
-        return True
+        Returns
+        -------
+        win : boolean
+        Whether or not the current player won.
+        """
 
-def code(self):
-    c = 0
-    for x in range(self.size):
-        for y in range(self.size):
-            c = c*3 + self.board[GoBoardUtil.coord_to_point(x,y,self.size)]
-    return c
+        legal = self.get_legal_moves(self.current_player)
+        if len(legal) == 0:
+            return False
+        else:
+            return True
+
+    def code(self):
+        c = 0
+        for x in range(self.size):
+            for y in range(self.size):
+                c = c*3 + self.board[GoBoardUtil.coord_to_point(x,y,self.size)]
+        return c
 
     def display(self):
         """
         displays the current Go board state
         """
-        return print(GoBoardUtil.get_twoD_board(self))
+        print(GoBoardUtil.get_twoD_board(self))
+        return
 
     # def is_legal_gomoku(self, point, color):
     #     """

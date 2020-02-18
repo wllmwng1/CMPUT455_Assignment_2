@@ -11,7 +11,7 @@ def switch_toPlay(state):
 
     if (curr_player == BLACK):
         next_player = WHITE
-    else (curr_player == WHITE):
+    elif (curr_player == WHITE):
         next_player = BLACK
 
     state.current_player = next_player
@@ -24,9 +24,8 @@ def negamax(state, tt):
         return store_result(tt, state, result)
 
     next_state = state.copy()
-    for m in state.get_legal_moves():
-        next_state.play_move(m, state.current_player)
-        
+    for m in state.get_legal_moves(state.current_player):
+        next_state.play_move(m, state.current_player) 
         switch_toPlay(next_state)
 
         success = not negamax(next_state, tt)
