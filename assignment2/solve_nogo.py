@@ -10,10 +10,12 @@ def call_search(state, timelimit=10):
     return timed_negamax(state, tt, timelimit)
 
 
-def solve(state):
-    result = call_search(state, 1)
-    return result
+def solve(state, timelimit=10):
+    result = call_search(state, timelimit)
 
+    print("result is: {}".format(result))
+
+    return result
 
 
 def solve_no_go():
@@ -21,8 +23,6 @@ def solve_no_go():
     state = NoGoBoard(7)
 
     result = solve(state)
-
-    print("result is: {}".format(result))
 
     return
 

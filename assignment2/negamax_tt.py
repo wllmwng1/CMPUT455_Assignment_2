@@ -1,13 +1,15 @@
 from board_util import GoBoardUtil, \
                         BLACK, WHITE, EMPTY
+import time
 import signal
 
 
-def immediately_evaluate(state, tt):
-    raise Exception;
+def immediately_evaluate(signum, frame):
+    raise Exception();
 
 
 def store_result(tt, state, result):
+    tt.store(state.code(), result)
     return result
 
 
@@ -25,9 +27,6 @@ def switch_toPlay(state):
 
 
 def negamax(state, tt):
-
-    signal.signal(signal.SIGALRM, immediately_evaluate)
-
     if state.is_game_ended():
         result = state.statisticallyEvaluateForToPlay()
         return store_result(tt, state, result)
@@ -48,16 +47,20 @@ def negamax(state, tt):
 
 
 def timed_negamax(state, tt, timelimit):
-    signal.alarm(timelimit)
 
-    result = False
+    print("timelimit is: {}".format(timelimit))
+
+
+    signal.signal(signal.SIGALRM, immediately_evaluate)
+
+    signal.alarm(1000)
+
+    result = None
     try:
+        # signal.alarm(timelimit)
         result = negamax(state, tt)
     except:
-        result = state.statisticallyEvaluateForToPlay()
-        print("current_player is: {}".format(state.current_player))
-        print("black: {}".format(BLACK))
-        print("result is: {}".format(result))
+        print("Exception raised")
     return result
 
 
