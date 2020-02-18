@@ -329,6 +329,13 @@ class SimpleGoBoard(object):
         else:
             return True
 
+    def code(self):
+        c = 0
+        for x in range(self.size):
+            for y in range(self.size):
+                c = c*3 + self.board[GoBoardUtil.coord_to_point(x,y,self.size)]
+        return c
+
     # def is_legal_gomoku(self, point, color):
     #     """
     #         Check whether it is legal for color to play on point, for the game of gomoku
