@@ -50,10 +50,9 @@ def timed_negamax(state, tt, timelimit):
 
     print("timelimit is: {}".format(timelimit))
 
-
     signal.signal(signal.SIGALRM, immediately_evaluate)
 
-    signal.alarm(1000)
+    signal.alarm(10)
 
     result = None
     try:
