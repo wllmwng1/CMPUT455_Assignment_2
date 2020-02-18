@@ -10,6 +10,7 @@ import traceback
 from sys import stdin, stdout, stderr
 from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS, \
                        MAXSIZE, coord_to_point
+from solve_nogo import solve
 import numpy as np
 import re
 import time
@@ -206,10 +207,29 @@ class GtpConnection():
 
     def solve_cmd(self, args):
 
-        output_winner = "unknown"
-        output_move = "A1"
+        output = None
 
-        self.respond("{} {}".format(output_winner, output_move))
+        next_state = self.board.copy()
+        
+        next_player = EMPTY
+        if (self.current_player == BLACK):
+            next_player = WHITE
+        elif (self.current_player == WHITE):
+            next_player = BLACK
+
+        for move in self.get_legal_moves(self.current_player):
+
+            next_state.current_player = next_player
+            result = not solve(self.board, self.timelimit)
+
+            if (result == True):
+                output = "{} {}".format(int_to_color(self.current_player), format_coord(move))
+            elif (result == False):
+                output = "{}".format(int_to_color(next_player))
+            elif (result == None):
+                output = "unknown" 
+
+        self.respond(output)
 
     def komi_cmd(self, args):
         """
@@ -439,6 +459,11 @@ def color_to_int(c):
     color_to_int = {"b": BLACK , "w": WHITE, "e": EMPTY,
                     "BORDER": BORDER}
     return color_to_int[c]
+
+def int_to_color(i):
+    """convert integer to the appropriate color character"""
+    int_to_color = {BLACK: "b", WHITE:"w", EMPTY:"e", BORDER:"BORDER"}
+    return int_to_color[i]
 
 def boolean_negamax_tt(board, tt, start, timelimit):
     if time.process_time() - start >= timelimit:

@@ -1,7 +1,7 @@
 from nogo_board import NoGoBoard
 from board_util import GoBoardUtil, \
                         BLACK, WHITE, EMPTY
-from gtp_connection import TranspositionTable
+from transposition_table import TranspositionTable
 from negamax_tt import negamax, timed_negamax
 import time
 
