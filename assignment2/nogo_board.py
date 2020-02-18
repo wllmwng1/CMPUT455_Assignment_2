@@ -331,6 +331,9 @@ class NoGoBoard(object):
 
     
     def display(self):
+        """
+        displays the current Go board state
+        """
         return print(GoBoardUtil.get_twoD_board(self))
 
     # def is_legal_gomoku(self, point, color):

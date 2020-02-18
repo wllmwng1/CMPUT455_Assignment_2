@@ -1,20 +1,40 @@
-from board_util import GoBoardUtil
+from board_util import GoBoardUtil, \
+                        BLACK, WHITE, EMPTY
+
+def store_result(tt, state, result):
+    return result
+
+
+def switch_toPlay(state):
+    curr_player = state.current_player
+    next_player = EMPTY
+
+    if (curr_player == BLACK):
+        next_player = WHITE
+    else (curr_player == WHITE):
+        next_player = BLACK
+
+    state.current_player = next_player
+    return 
+
 
 def negamax(state, tt):
-    print("negamax now exists!")
+    if state.is_game_ended():
+        result = state.statisticallyEvaluateForToPlay()
+        return store_result(tt, state, result)
 
-    i = 0
+    next_state = state.copy()
+    for m in state.get_legal_moves():
+        next_state.play_move(m, state.current_player)
+        
+        switch_toPlay(next_state)
 
-    while (not state.is_game_ended()):
-        current_player = state.current_player
-        move = GoBoardUtil.generate_random_move(state, current_player, False)
-        state.play_move(move, current_player)
-        print("move {}: {}".format(i, move))
-        print(state.display())
-        print()
-        i += 1
+        success = not negamax(next_state, tt)
 
-    print("finished")
+        next_state = state.copy()
 
-    return None
+        if success:
+            return store_result(tt, state, True)
+
+    return store_result(tt, state, True)
 
