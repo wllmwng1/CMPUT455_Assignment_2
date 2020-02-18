@@ -73,6 +73,7 @@ class SimpleGoBoard(object):
         self.maxpoint = size * size + 3 * (size + 1)
         self.board = np.full(self.maxpoint, BORDER, dtype = np.int32)
         self.liberty_of = np.full(self.maxpoint, NULLPOINT, dtype = np.int32)
+        self.moves = []
         self._initialize_empty_points(self.board)
         self._initialize_neighbors()
 
@@ -264,7 +265,13 @@ class SimpleGoBoard(object):
         if in_enemy_eye and len(single_captures) == 1:
             self.ko_recapture = single_captures[0]
         self.current_player = GoBoardUtil.opponent(color)
+        self.moves.append(point)
         return True
+
+    def undo_move(self):
+        point = self.moves.pop()
+        self.board[point] = EMPTY
+        self.current_player = GoBoardUtil.opponent(color)
 
     def neighbors_of_color(self, point, color):
         """ List of neighbors of point of given color """
