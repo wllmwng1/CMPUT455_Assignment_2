@@ -2,19 +2,16 @@ from nogo_board import NoGoBoard
 from board_util import GoBoardUtil, \
                         BLACK, WHITE, EMPTY
 from gtp_connection import TranspositionTable
-from negamax_tt import negamax
+from negamax_tt import negamax, timed_negamax
+import time
 
-def call_search(state):
+def call_search(state, timelimit=10):
     tt = TranspositionTable()
-    return negamax(state, tt)
+    return timed_negamax(state, tt, timelimit)
 
 
 def solve(state):
-
-    current_player = state.current_player
-
-    result = call_search(state)
-
+    result = call_search(state, 1)
     return result
 
 
