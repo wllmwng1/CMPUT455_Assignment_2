@@ -12,6 +12,7 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS, \
                        MAXSIZE, coord_to_point
 import numpy as np
 import re
+import time
 
 class GtpConnection():
 
@@ -438,3 +439,25 @@ def color_to_int(c):
     color_to_int = {"b": BLACK , "w": WHITE, "e": EMPTY,
                     "BORDER": BORDER}
     return color_to_int[c]
+
+def boolean_negamax_tt(board, tt, start, timelimit):
+    if time.process_time() - start >= timelimit:
+        return None
+    result = tt.lookup(board.code())
+    if result != None:
+        return result
+    legal_moves = GoBoardUtil.generate_legal_moves(board, board.current_player)
+    if len(legal_moves) == 0:
+        return storeResult(tt, board, board.staticallyEvaluateForToPlay())
+    else:
+        for m in legal_moves:
+            board.play_move(m, board.current_player)
+            success = not boolean_negamax_tt(board, tt)
+            board.undo_move()
+            if success:
+                return storeResult(tt, board, True), m
+        return storeResult(tt, board, False)
+
+def storeResult(tt,board):
+    tt.store(board.code(), result)
+    return result
