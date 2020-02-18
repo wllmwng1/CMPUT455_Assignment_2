@@ -61,6 +61,9 @@ def timed_negamax(state, tt, timelimit):
         result = negamax(state, tt)
     except:
         print("Exception raised")
+
+    signal.alarm(0)
+
     return result
 
 
