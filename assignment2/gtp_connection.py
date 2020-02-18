@@ -368,6 +368,16 @@ class GtpConnection():
                      "pstring/Show Board/gogui-rules_board\n"
                      )
 
+class TranspositionTable():
+    def __init__(self):
+        self.table = dict()
+
+    def store(self, code, score):
+        self.table[code] = score
+
+    def lookup(self, code):
+        return self.table.get(code)
+
 def point_to_coord(point, boardsize):
     """
     Transform point given as board array index
