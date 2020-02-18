@@ -360,7 +360,7 @@ class NoGoBoard(object):
         c = 0
         for x in range(self.size):
             for y in range(self.size):
-                c = c*3 + self.board[GoBoardUtil.coord_to_point(x,y,self.size)]
+                c = c*3 + self.board[coord_to_point(x + 1, y + 1, self.size)]
         return c
 
     def display(self):
