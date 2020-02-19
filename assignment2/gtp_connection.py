@@ -13,6 +13,7 @@ from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS, \
 import numpy as np
 import re
 import time
+import random
 
 class GtpConnection():
 
@@ -371,8 +372,9 @@ class GtpConnection():
                      )
 
 class TranspositionTable():
-    def __init__(self):
+    def __init__(self,size):
         self.table = dict()
+        self.code = np.reshape(np.array(random.sample(range(1,1000),size*size*3)),(size*size,3))
 
     def store(self, code, score):
         self.table[code] = score

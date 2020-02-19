@@ -356,11 +356,12 @@ class NoGoBoard(object):
         else:
             return True
 
-    def code(self):
+    def code(self,tt):
         c = 0
         for x in range(self.size):
             for y in range(self.size):
-                c = c*3 + self.board[coord_to_point(x + 1, y + 1, self.size)]
+                point = coord_to_point(x+1,y+1,self.size)
+                c = c ^ tt.code[x*self.size+y][self.board[point]]
         return c
 
     def display(self):
