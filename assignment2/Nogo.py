@@ -4,7 +4,7 @@
 
 from gtp_connection import GtpConnection
 from board_util import GoBoardUtil
-from simple_board import SimpleGoBoard
+from nogo_board import NoGoBoard
 
 class Nogo():
     def __init__(self):
@@ -24,7 +24,7 @@ def run():
     """
     start the gtp connection and wait for commands.
     """
-    board = SimpleGoBoard(7)
+    board = NoGoBoard(7)
     con = GtpConnection(Nogo(), board)
     con.start_connection()
 

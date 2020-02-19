@@ -212,18 +212,18 @@ class GtpConnection():
         next_state = self.board.copy()
         
         next_player = EMPTY
-        if (self.current_player == BLACK):
+        if (self.board.current_player == BLACK):
             next_player = WHITE
-        elif (self.current_player == WHITE):
+        elif (self.board.current_player == WHITE):
             next_player = BLACK
 
-        for move in self.get_legal_moves(self.current_player):
+        for move in self.board.get_legal_moves(self.board.current_player):
 
             next_state.current_player = next_player
             result = not solve(self.board, self.timelimit)
 
             if (result == True):
-                output = "{} {}".format(int_to_color(self.current_player), format_coord(move))
+                output = "{} {}".format(int_to_color(self.board.current_player), format_point(point_to_coord(move, self.board.size)))
             elif (result == False):
                 output = "{}".format(int_to_color(next_player))
             elif (result == None):
