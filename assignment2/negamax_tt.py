@@ -9,7 +9,7 @@ def immediately_evaluate(signum, frame):
 
 
 def store_result(tt, state, result):
-    # tt.store(state.code(), result)
+    tt.store(state.code(tt), result)
     return result
 
 
@@ -23,7 +23,7 @@ def switch_toPlay(state):
         next_player = BLACK
 
     state.current_player = next_player
-    return 
+    return
 
 
 def negamax(state, tt):
@@ -33,7 +33,7 @@ def negamax(state, tt):
 
     next_state = state.copy()
     for m in state.get_legal_moves(state.current_player):
-        next_state.play_move(m, state.current_player) 
+        next_state.play_move(m, state.current_player)
         switch_toPlay(next_state)
 
         success = not negamax(next_state, tt)
@@ -56,7 +56,7 @@ def timed_negamax(state, tt, timelimit):
 
     result = None
 
-    # result = negamax(state, tt)
+    result = negamax(state, tt)
 
     try:
         # signal.alarm(timelimit)
@@ -68,6 +68,3 @@ def timed_negamax(state, tt, timelimit):
 
     signal.alarm(0)
     return result
-
-
-

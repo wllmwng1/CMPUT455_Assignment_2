@@ -6,7 +6,7 @@ from negamax_tt import negamax, timed_negamax
 import time
 
 def call_search(state, timelimit=10):
-    tt = TranspositionTable()
+    tt = TranspositionTable(7)
     return timed_negamax(state, tt, timelimit)
 
 
@@ -29,5 +29,3 @@ def solve_no_go():
 if __name__ == "__main__":
     print("testing solve_nogo.py...")
     solve_no_go()
-
-
