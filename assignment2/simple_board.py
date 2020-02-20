@@ -336,11 +336,11 @@ class SimpleGoBoard(object):
         else:
             return True
 
-    def code(self):
+    def code(self,tt):
         c = 0
         for x in range(self.size):
             for y in range(self.size):
-                c = c*3 + self.board[GoBoardUtil.coord_to_point(x,y,self.size)]
+                c = c ^ tt.code[x*self.size+y][self.board[coord_to_point(x+1,y+1,self.size)]]
         return c
 
     # def is_legal_gomoku(self, point, color):
