@@ -46,7 +46,7 @@ def negamax(state, tt):
         state.undo_move()
 
         if success:
-            return store_result(tt, state, True)
+            return [store_result(tt, state, True),m]
 
     return store_result(tt, state, False)
 
