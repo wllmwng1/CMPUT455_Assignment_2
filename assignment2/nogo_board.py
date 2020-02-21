@@ -283,14 +283,14 @@ class NoGoBoard(object):
         self.ko_recapture = None
         if in_enemy_eye and len(single_captures) == 1:
             self.ko_recapture = single_captures[0]
+        self.moves.append([point,self.current_player])
         self.current_player = GoBoardUtil.opponent(color)
-        self.moves.append(point)
         return True
 
     def undo_move(self):
-        point = self.moves.pop()
-        self.board[point] = EMPTY
-        self.current_player = GoBoardUtil.opponent(color)
+        data = self.moves.pop()
+        self.board[data[0]] = EMPTY
+        self.current_player = data[1]
 
     def neighbors_of_color(self, point, color):
         """ List of neighbors of point of given color """

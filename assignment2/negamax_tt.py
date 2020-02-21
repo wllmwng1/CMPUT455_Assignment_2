@@ -27,23 +27,28 @@ def switch_toPlay(state):
 
 
 def negamax(state, tt):
+    result = tt.lookup(state.code(tt))
+    if result != None:
+        return result
     if state.is_game_ended():
         result = state.statisticallyEvaluateForToPlay()
         return store_result(tt, state, result)
 
-    next_state = state.copy()
+    # next_state = state.copy()
     for m in state.get_legal_moves(state.current_player):
-        next_state.play_move(m, state.current_player)
-        switch_toPlay(next_state)
+        # next_state.play_move(m, state.current_player)
+        # switch_toPlay(next_state)
+        # success = not negamax(next_state, tt)
+        # next_state = state.copy()
 
-        success = not negamax(next_state, tt)
-
-        next_state = state.copy()
+        state.play_move(m, state.current_player)
+        success = not negamax(state, tt)
+        state.undo_move()
 
         if success:
             return store_result(tt, state, True)
 
-    return store_result(tt, state, True)
+    return store_result(tt, state, False)
 
 
 def timed_negamax(state, tt, timelimit):
@@ -56,7 +61,7 @@ def timed_negamax(state, tt, timelimit):
 
     result = None
 
-    result = negamax(state, tt)
+    # result = negamax(state, tt)
 
     try:
         # signal.alarm(timelimit)
