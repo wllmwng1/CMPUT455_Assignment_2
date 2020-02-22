@@ -5,7 +5,7 @@ import signal
 
 
 def immediately_evaluate(signum, frame):
-    raise Exception("TIMELIMIT ERROR: timed out");
+    raise TimeoutError("TIMELIMIT ERROR: timed out");
 
 
 def store_result(tt, state, result):
@@ -53,7 +53,7 @@ def negamax(state, tt):
 
 def timed_negamax(state, tt, timelimit):
 
-    print("timelimit is: {}".format(timelimit))
+    # print("timelimit is: {}".format(timelimit))
 
     signal.signal(signal.SIGALRM, immediately_evaluate)
 
@@ -66,8 +66,8 @@ def timed_negamax(state, tt, timelimit):
     try:
         # signal.alarm(timelimit)
         result = negamax(state, tt)
-    except Exception as e:
-        print("Exception raised: {}".format(e))
+    except TimeoutError as e:
+        # print("Error raised: {}".format(e))
         signal.alarm(0)
         return result
 

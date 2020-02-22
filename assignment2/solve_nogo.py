@@ -6,14 +6,14 @@ from negamax_tt import negamax, timed_negamax
 import time
 
 def call_search(state, timelimit=10):
-    tt = TranspositionTable(4)
+    tt = TranspositionTable(state.size)
     return timed_negamax(state, tt, timelimit)
 
 
 def solve(state, timelimit=10):
     result = call_search(state, timelimit)
 
-    print("result is: {}".format(result))
+    # print("result is: {}".format(result))
 
     return result
 
