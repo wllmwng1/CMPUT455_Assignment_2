@@ -2,6 +2,7 @@ from nogo_board import NoGoBoard
 from board_util import GoBoardUtil, \
                         BLACK, WHITE, EMPTY
 from transposition_table import TranspositionTable
+from timeout_exception import TimeoutException
 from negamax_tt import timed_negamax, timed_negamax_with_moves
 import time
 
@@ -11,7 +12,7 @@ def call_search(state, timelimit):
     
     try:
         result = timed_negamax(state, tt, timelimit)
-    except TimeoutError:
+    except TimeoutException:
         result = None
     
     return result
@@ -24,7 +25,7 @@ def solve(state, tt=None, timelimit=10):
     result = None
     try:
         result = timed_negamax_with_moves(state.copy(), tt, timelimit)
-    except TimeoutError:
+    except TimeoutException:
         result = None
     
     return result

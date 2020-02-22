@@ -31,7 +31,7 @@ class SimpleGoBoard(object):
         # This prevents the board from being messed up by the move
         try:
             legal = board_copy.play_move(point, color)
-        except:
+        except ValueError:
             return False
 
         return legal

@@ -194,7 +194,7 @@ class GtpConnection():
         try:
             # attempt to turn the argument into an integer
             seconds = int(args[0])
-        except:
+        except ValueError:
             # argument cannot be turned into an integer
             self.respond("Error: Argument not valid, must be an integer in the bound of [1,100]")
             return
@@ -445,7 +445,7 @@ def move_to_coord(point_str, board_size):
         return PASS
     try:
         col_c = s[0]
-        if (not "a" <= col_c <= "z") or col_c == "i":
+       ValueError  if (not "a" <= col_c <= "z") or col_c == "i":
             raise ValueError
         col = ord(col_c) - ord("a")
         if col_c < "i":

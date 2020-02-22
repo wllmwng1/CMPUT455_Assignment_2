@@ -8,7 +8,7 @@ from random import randint
 
 
 def immediately_evaluate(signum, frame):
-    raise TimeoutError("TIMELIMIT ERROR: timed out");
+    raise TimeoutException("TIMELIMIT ERROR: timed out");
 
 
 def store_result(tt, state, result):
@@ -130,7 +130,7 @@ if __name__ == "__main__":
         result = None
         try:
             result = timed_negamax_with_moves(state.copy(), tt, timelimit)
-        except TimeoutError:
+        except TimeoutException:
             result = None
         
         if (type(result) == type(tuple())):
