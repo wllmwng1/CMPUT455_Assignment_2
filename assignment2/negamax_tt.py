@@ -49,7 +49,7 @@ def negamax(state, tt):
         state.undo_move()
 
         if success:
-            return store_result(tt, state, True)
+            return store_result(tt, state, True), m
 
     return store_result(tt, state, False)
 
@@ -61,7 +61,7 @@ def negamax_with_moves(state, tt, timelimit):
         state.play_move(move, state.current_player)
 
         result = negamax(state, tt)
-        
+
         state.undo_move()
 
         if (result == False):
@@ -90,28 +90,28 @@ def timed_negamax(state, tt, timelimit):
 def timed_negamax_with_moves(state, tt, timelimit):
     signal.signal(signal.SIGALRM, immediately_evaluate)
     signal.alarm(timelimit)
-    
+
     result = negamax_with_moves(state, tt, timelimit)
-    
+
     signal.alarm(0)
-    
+
     return result
 
 def eval_all_moves(all_moves):
     all_moves = all_moves - {False}
-    
+
     if len(all_moves) == 0:
         return False
-    
+
     all_moves = all_moves - {None}
-    
+
     if len(all_moves) == 0:
         return None
-    
+
     for m in all_moves:
         if type(m) == type(tuple()):
             return m
-    
+
     return None
 
 
@@ -120,29 +120,27 @@ if __name__ == "__main__":
     timelimit = 3
     state = NoGoBoard(board_size)
     tt = TranspositionTable(state.size)
-    
+
     print("Player that goes first: {}".format(state.current_player))
-    
+
     while len(state.get_legal_moves(state.current_player)) != 0:
         i = randint(0, len(state.get_legal_moves(state.current_player)) - 1)
         Rmove = state.get_legal_moves(state.current_player)[i]
-        
+
         result = None
         try:
             result = timed_negamax_with_moves(state.copy(), tt, timelimit)
         except TimeoutException:
             result = None
-        
+
         if (type(result) == type(tuple())):
             Rmove = result[1]
-        
+
         print("FOR PLAYER {}".format(state.current_player))
-        
+
         state.play_move(Rmove, state.current_player)
-        
+
         print(result)
         print(Rmove)
         state.display()
         input()
-    
-    
