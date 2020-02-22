@@ -219,7 +219,8 @@ class GtpConnection():
         if (result == False):
             output = "{}".format(opp_color)
         elif (type(result) == type(tuple())):
-            output = "{} {}".format(cur_color, result[1])
+            coords = point_to_coord(result[1], self.board.size)
+            output = "{} {}".format(cur_color, format_point(coords))
         else:
             output = "unknown"
         

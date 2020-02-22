@@ -91,7 +91,7 @@ def timed_negamax_with_moves(state, tt, timelimit):
     signal.signal(signal.SIGALRM, immediately_evaluate)
     signal.alarm(timelimit)
     
-    negamax_with_moves(state, tt, timelimit)
+    result = negamax_with_moves(state, tt, timelimit)
     
     signal.alarm(0)
     
