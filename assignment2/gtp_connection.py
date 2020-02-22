@@ -10,6 +10,7 @@ import traceback
 from sys import stdin, stdout, stderr
 from board_util import GoBoardUtil, BLACK, WHITE, EMPTY, BORDER, PASS, \
                        MAXSIZE, coord_to_point
+from transposition_table import TranspositionTable
 from solve_nogo import solve
 import numpy as np
 import re
@@ -209,7 +210,7 @@ class GtpConnection():
     def solve_cmd(self, args):
         state = self.board.copy()
         
-        result = solve(state, self.timelimit)
+        result = solve(state, self.tt, self.timelimit)
         
         cur_color = int_to_color(self.board.current_player)
         opp_color = int_to_color(GoBoardUtil.opponent(self.board.current_player))
@@ -383,6 +384,7 @@ class GtpConnection():
                      "pstring/Show Board/gogui-rules_board\n"
                      )
 
+"""
 class TranspositionTable():
     def __init__(self,size):
         self.table = dict()
@@ -393,6 +395,7 @@ class TranspositionTable():
 
     def lookup(self, code):
         return self.table.get(code)
+"""
 
 def point_to_coord(point, boardsize):
     """

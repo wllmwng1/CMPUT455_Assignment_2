@@ -17,8 +17,9 @@ def call_search(state, timelimit):
     return result
 
 
-def solve(state, timelimit):
-    tt = TranspositionTable(state.size)
+def solve(state, tt=None, timelimit=10):
+    if (tt == None):
+        tt = TranspositionTable(state.size)
     
     result = None
     try:
