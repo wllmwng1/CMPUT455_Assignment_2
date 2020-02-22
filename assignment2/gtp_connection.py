@@ -207,29 +207,21 @@ class GtpConnection():
             self.respond("Error: Argument is not within the range of [1,100]")
 
     def solve_cmd(self, args):
-
-        output = None
-
-        next_state = self.board.copy()
+        state = self.board.copy()
         
-        next_player = EMPTY
-        if (self.board.current_player == BLACK):
-            next_player = WHITE
-        elif (self.board.current_player == WHITE):
-            next_player = BLACK
-
-        for move in self.board.get_legal_moves(self.board.current_player):
-
-            next_state.current_player = next_player
-            result = not solve(self.board, self.timelimit)
-
-            if (result == True):
-                output = "{} {}".format(int_to_color(self.board.current_player), format_point(point_to_coord(move, self.board.size)))
-            elif (result == False):
-                output = "{}".format(int_to_color(next_player))
-            elif (result == None):
-                output = "unknown" 
-
+        result = solve(state, self.timelimit)
+        
+        cur_color = int_to_color(self.board.current_player)
+        opp_color = int_to_color(GoBoardUtil.opponent(self.board.current_player))
+        
+        output = None
+        if (result == False):
+            output = "{}".format(opp_color)
+        elif (type(result) == type(tuple())):
+            output = "{} {}".format(cur_color, result[1])
+        else:
+            output = "unknown"
+        
         self.respond(output)
 
     def komi_cmd(self, args):
