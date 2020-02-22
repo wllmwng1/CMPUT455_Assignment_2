@@ -445,7 +445,7 @@ def move_to_coord(point_str, board_size):
         return PASS
     try:
         col_c = s[0]
-       ValueError  if (not "a" <= col_c <= "z") or col_c == "i":
+        if (not "a" <= col_c <= "z") or col_c == "i":
             raise ValueError
         col = ord(col_c) - ord("a")
         if col_c < "i":

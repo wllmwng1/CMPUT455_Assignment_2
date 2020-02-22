@@ -2,6 +2,7 @@ from nogo_board import NoGoBoard
 from board_util import GoBoardUtil, \
                         BLACK, WHITE, EMPTY
 from transposition_table import TranspositionTable
+from timeout_exception import TimeoutException
 import time
 import signal
 from random import randint
