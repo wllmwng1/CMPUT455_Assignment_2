@@ -103,7 +103,6 @@ def timed_negamax_with_moves(state, tt, depth, timelimit):
     result = negamax_with_moves(state, tt, depth)
 
     signal.alarm(0)
-
     return result
 
 def eval_all_moves(all_moves):
