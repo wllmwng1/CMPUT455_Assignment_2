@@ -30,38 +30,32 @@ def switch_toPlay(state):
     return
 
 
-def negamax(state, tt):
+def negamax(state, tt, depth):
     result = tt.lookup(state.code(tt))
     if result != None:
         return result
-    if state.is_game_ended():
+    if (state.is_game_ended() or depth <= 0):
         result = state.statisticallyEvaluateForToPlay()
         return store_result(tt, state, result)
 
-    # next_state = state.copy()
     for m in state.get_legal_moves(state.current_player):
-        # next_state.play_move(m, state.current_player)
-        # switch_toPlay(next_state)
-        # success = not negamax(next_state, tt)
-        # next_state = state.copy()
-
         state.play_move(m, state.current_player)
-        success = not negamax(state, tt)
+        success = not negamax(state, tt, depth - 1)
         state.undo_move()
 
         if success:
-            return store_result(tt, state, True), m
+            return store_result(tt, state, True)
 
     return store_result(tt, state, False)
 
 
-def negamax_with_moves(state, tt, timelimit):
+def negamax_with_moves(state, tt, depth):
     all_moves = set()
     for move in state.get_legal_moves(state.current_player):
 
         state.play_move(move, state.current_player)
 
-        result = negamax(state, tt)
+        result = negamax(state, tt, depth - 1)
 
         state.undo_move()
 
@@ -78,21 +72,21 @@ def negamax_with_moves(state, tt, timelimit):
     return result
 
 
-def timed_negamax(state, tt, timelimit):
+def timed_negamax(state, tt, depth, timelimit):
     signal.signal(signal.SIGALRM, immediately_evaluate)
     signal.alarm(timelimit)
     result = None
 
-    result = negamax(state, tt)
+    result = negamax(state, tt, depth)
 
     signal.alarm(0)
     return result
 
-def timed_negamax_with_moves(state, tt, timelimit):
+def timed_negamax_with_moves(state, tt, depth, timelimit):
     signal.signal(signal.SIGALRM, immediately_evaluate)
     signal.alarm(timelimit)
 
-    result = negamax_with_moves(state, tt, timelimit)
+    result = negamax_with_moves(state, tt, depth)
 
     signal.alarm(0)
 
@@ -118,6 +112,7 @@ def eval_all_moves(all_moves):
 
 if __name__ == "__main__":
     board_size = 4
+    depth = 10
     timelimit = 3
     state = NoGoBoard(board_size)
     tt = TranspositionTable(state.size)
@@ -130,7 +125,7 @@ if __name__ == "__main__":
 
         result = None
         try:
-            result = timed_negamax_with_moves(state.copy(), tt, timelimit)
+            result = timed_negamax_with_moves(state.copy(), tt, depth, timelimit)
         except TimeoutException:
             result = None
 

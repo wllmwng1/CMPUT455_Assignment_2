@@ -19,13 +19,13 @@ def call_search(state, timelimit):
     return result
 
 
-def solve(state, tt=None, timelimit=10):
+def solve(state, tt=None, depth=1000, timelimit=10):
     if (tt == None):
         tt = TranspositionTable(state.size)
 
     result = None
     try:
-        result = timed_alphabeta_negamax(state.copy(), tt, timelimit)
+        result = timed_negamax_with_moves(state.copy(), tt, depth, timelimit)
     except TimeoutException:
         result = None
 
