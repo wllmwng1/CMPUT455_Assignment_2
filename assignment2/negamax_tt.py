@@ -40,24 +40,33 @@ def negamax(state, tt, depth):
 
     noneFlag = False
 
+    state_copy = state.copy()
+
     # for m in state.get_legal_moves(state.current_player):
     for m in state.get_empty_points():
-        if not state.is_legal(m, state.current_player):
+
+        try:
+            legal = state_copy.play_move(m, state_copy.current_player)
+        except ValueError:
+            state_copy.apply(state)
             continue
 
-        state.play_move(m, state.current_player)
+        if (legal == False):
+            continue
 
-        success = negamax(state, tt, depth - 1)
+        # state.play_move(m, state.current_player)
+
+        success = negamax(state_copy, tt, depth - 1)
 
         if (success != None):
             success = not success
         else:
             noneFlag = True
 
-        state.undo_move()
+        state_copy.undo_move()
 
         if success:
-            return store_result(tt, state, True)
+            return store_result(tt, state_copy, True)
 
     result = None
     if (noneFlag):
@@ -71,16 +80,25 @@ def negamax(state, tt, depth):
 def negamax_with_moves(state, tt, depth):
     all_moves = set()
 
+    state_copy = state.copy()
+
     # for move in state.get_legal_moves(state.current_player):
     for move in state.get_empty_points():
-        if not state.is_legal(move, state.current_player):
+
+        try:
+            legal = state_copy.play_move(move, state_copy.current_player)
+        except ValueError:
+            state_copy.apply(state)
             continue
 
-        state.play_move(move, state.current_player)
+        if (legal == False):
+            continue
 
-        result = negamax(state, tt, depth - 1)
+        # state.play_move(move, state_copy.current_player)
 
-        state.undo_move()
+        result = negamax(state_copy, tt, depth - 1)
+
+        state_copy.undo_move()
 
         if (result == False):
             all_moves.add((True, move))

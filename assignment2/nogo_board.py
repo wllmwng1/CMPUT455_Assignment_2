@@ -108,12 +108,12 @@ class NoGoBoard(object):
 
     def apply(self, new_board):
         assert new_board.size == self.size
-        new_board.NS = self.NS
-        new_board.WE = self.WE
-        new_board.ko_capture = new_board.ko_capture
-        new_board.current_player = self.current_player
-        new_board.maxpoint = self.maxpoint
-        new_board.board = np.copy(self.board)
+        self.NS = new_board.NS
+        self.WE = new_board.WE
+        self.ko_recapture = new_board.ko_recapture
+        self.current_player = new_board.current_player
+        self.maxpoint = new_board.maxpoint
+        self.board = np.copy(new_board.board)
         return
 
     def row_start(self, row):
