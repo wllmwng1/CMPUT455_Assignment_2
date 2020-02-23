@@ -210,7 +210,7 @@ class GtpConnection():
     def solve_cmd(self, args):
         state = self.board.copy()
 
-        depth = 10 # + int(self.timelimit / 10)
+        depth = 7 # + int(self.timelimit / 20)
 
         result = solve(state, self.tt, depth, self.timelimit)
 

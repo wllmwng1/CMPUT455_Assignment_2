@@ -350,11 +350,16 @@ class NoGoBoard(object):
         Whether or not the current player won.
         """
 
-        legal = self.get_legal_moves(self.current_player)
-        if len(legal) == 0:
+        cur_legal_moves = self.get_legal_moves(self.current_player)
+        opp_legal_moves = self.get_legal_moves(GoBoardUtil.opponent(self.current_player))
+
+        if len(cur_legal_moves) == 0:
             return False
-        else:
+
+        if len(opp_legal_moves) == 0:
             return True
+
+        return None
 
     def code(self,tt):
         c = 0

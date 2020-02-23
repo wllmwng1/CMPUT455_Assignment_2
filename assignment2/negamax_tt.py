@@ -38,15 +38,29 @@ def negamax(state, tt, depth):
         result = state.statisticallyEvaluateForToPlay()
         return store_result(tt, state, result)
 
+    noneFlag = False
+
     for m in state.get_legal_moves(state.current_player):
         state.play_move(m, state.current_player)
-        success = not negamax(state, tt, depth - 1)
+        success = negamax(state, tt, depth - 1)
+
+        if (success != None):
+            success = not success
+        else:
+            noneFlag = True
+
         state.undo_move()
 
         if success:
             return store_result(tt, state, True)
 
-    return store_result(tt, state, False)
+    result = None
+    if (noneFlag):
+        result = store_result(tt, state, None)
+    else:
+        result = store_result(tt, state, False)
+
+    return result
 
 
 def negamax_with_moves(state, tt, depth):
