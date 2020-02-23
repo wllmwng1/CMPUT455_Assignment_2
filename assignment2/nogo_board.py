@@ -297,6 +297,51 @@ class NoGoBoard(object):
         self.current_player = GoBoardUtil.opponent(color)
         return True
 
+    def quicker_legal(self, point):
+
+        color = self.current_player
+
+        if point == PASS:
+            return False
+        elif self.board[point] != EMPTY:
+            return False
+        if point == self.ko_recapture:
+            return False
+
+        # General case: deal with captures, suicide, and next ko point
+        opp_color = GoBoardUtil.opponent(color)
+        in_enemy_eye = self._is_surrounded(point, opp_color)
+
+        if in_enemy_eye:
+            return False
+
+        single_captures = []
+
+        self.board[point] = color
+
+        neighbors = self.neighbors[point]
+        
+        for nb in neighbors:
+            if self.board[nb] == opp_color:
+                if self._detect_capture(nb):
+                    self.board[point] = EMPTY
+                    return False
+        
+        if not self._stone_has_liberty(point):
+            # check suicide of whole block
+            block = self._block_of(point)
+            if not self._has_liberty(block): # undo suicide move
+                self.board[point] = EMPTY
+                return False
+
+        self.board[point] = EMPTY
+        return True
+
+    def blind_play(self, point, color):
+        self.board[point] = color
+        self.moves.append([point, self.current_player])
+        self.current_player = GoBoardUtil.opponent(color)
+
     def undo_move(self):
         data = self.moves.pop()
         self.board[data[0]] = EMPTY

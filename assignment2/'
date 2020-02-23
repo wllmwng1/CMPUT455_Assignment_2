@@ -6,7 +6,7 @@ from timeout_exception import TimeoutException
 import time
 import signal
 from random import randint
-import numpy as np
+
 
 def immediately_evaluate(signum, frame):
     raise TimeoutException("TIMELIMIT ERROR: timed out");
@@ -35,22 +35,19 @@ def negamax(state, tt, depth, memoized_moves):
     if result != None:
         return result
 
-    if (state.is_game_ended() or depth <= 0):
+    legal_moves = set(filter(state.quicker_legal, memoized_moves))
+
+    if ((len(legal_moves) == 0) or depth <= 0):
         result = state.statisticallyEvaluateForToPlay()
         return store_result(tt, state, result)
 
     noneFlag = False
 
     # for m in state.get_legal_moves(state.current_player):
-    for i in range(len(memoized_moves)):
-        m = memoized_moves[i];
+    for m in legal_moves:
+        state.blind_play(point, state.current_player)
 
-        if not state.quicker_legal(m):
-            continue
-
-        state.blind_play(m, state.current_player)
-
-        success = negamax(state, tt, depth - 1, np.delete(memoized_moves, i))
+        success = negamax(state, tt, depth - 1, memoized_moves - {move})
 
         state.undo_move()
 
@@ -74,20 +71,17 @@ def negamax(state, tt, depth, memoized_moves):
 def negamax_with_moves(state, tt, depth, memoized_moves):
     all_moves = set()
 
-    if (state.is_game_ended() or depth <= 0):
+    legal_moves = set(filter(state.quicker_legal, memoized_moves))
+
+    if ((len(legal_moves) == 0) or depth <= 0):
         result = state.statisticallyEvaluateForToPlay()
         return store_result(tt, state, result)
 
     # for move in state.get_legal_moves(state.current_player):
-    for i in range(len(memoized_moves)):
-        move = memoized_moves[i];
+    for move in legal_moves:
+        state.blind_play(point, state.current_player)
 
-        if not state.quicker_legal(move):
-            continue
-
-        state.blind_play(move, state.current_player)
-
-        result = negamax(state, tt, depth - 1, np.delete(memoized_moves, i))
+        result = negamax(state, tt, depth - 1, memoized_moves - {move})
 
         state.undo_move()
 
@@ -109,7 +103,7 @@ def timed_negamax(state, tt, depth, timelimit):
     signal.alarm(timelimit)
     result = None
 
-    result = negamax(state, tt, depth, state.get_empty_points())
+    result = negamax(state, tt, depth, set(state.get_empty_points()))
 
     signal.alarm(0)
     return result
@@ -118,7 +112,7 @@ def timed_negamax_with_moves(state, tt, depth, timelimit):
     signal.signal(signal.SIGALRM, immediately_evaluate)
     signal.alarm(timelimit)
 
-    result = negamax_with_moves(state, tt, depth, state.get_empty_points())
+    result = negamax_with_moves(state, tt, depth, set(state.get_empty_points()))
 
     signal.alarm(0)
     return result

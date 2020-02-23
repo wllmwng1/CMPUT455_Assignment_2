@@ -16,6 +16,7 @@ import numpy as np
 import re
 import time
 import random
+import cProfile
 
 class GtpConnection():
 
