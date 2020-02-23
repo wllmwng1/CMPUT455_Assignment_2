@@ -3,8 +3,9 @@ from board_util import GoBoardUtil, \
                         BLACK, WHITE, EMPTY
 from transposition_table import TranspositionTable
 from timeout_exception import TimeoutException
-from negamax_tt import timed_negamax, timed_negamax_with_moves
+from negamax_tt import timed_negamax, timed_negamax_with_moves, timed_alphabeta_negamax
 import time
+import cProfile
 
 def call_search(state, timelimit):
     tt = TranspositionTable(state.size)
@@ -24,7 +25,7 @@ def solve(state, tt=None, timelimit=10):
 
     result = None
     try:
-        result = timed_negamax_with_moves(state.copy(), tt, timelimit)
+        result = timed_alphabeta_negamax(state.copy(), tt, timelimit)
     except TimeoutException:
         result = None
 
@@ -33,13 +34,13 @@ def solve(state, tt=None, timelimit=10):
 
 def solve_no_go():
     print("Solving NoGo")
-    state = NoGoBoard(3)
+    state = NoGoBoard(4)
 
-    result = solve(state, None, 1)
+    result = solve(state, None, 100)
     print(result)
 
     return
 
 if __name__ == "__main__":
     print("testing solve_nogo.py...")
-    solve_no_go()
+    cProfile.run("solve_no_go()")

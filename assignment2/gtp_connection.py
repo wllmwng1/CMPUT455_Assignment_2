@@ -209,21 +209,21 @@ class GtpConnection():
 
     def solve_cmd(self, args):
         state = self.board.copy()
-        
+
         result = solve(state, self.tt, self.timelimit)
-        
+
         cur_color = int_to_color(self.board.current_player)
         opp_color = int_to_color(GoBoardUtil.opponent(self.board.current_player))
-        
+
         output = None
         if (result == False):
             output = "{}".format(opp_color)
         elif (type(result) == type(tuple())):
             coords = point_to_coord(result[1], self.board.size)
-            output = "{} {}".format(cur_color, format_point(coords))
+            output = "{} {}".format(cur_color, format_point(coords)).lower()
         else:
             output = "unknown"
-        
+
         self.respond(output)
 
     def komi_cmd(self, args):
@@ -297,21 +297,21 @@ class GtpConnection():
         """
         board_color = args[0].lower()
         color = color_to_int(board_color)
-        
+
         state = self.board.copy()
         result = solve(state, self.tt, self.timelimit)
-        
+
         move = None
         if (type(result) == type(tuple())):
             move = result[1]
         else:
             move = self.go_engine.get_move(self.board, color)
-        
+
         move_coord = point_to_coord(move, self.board.size)
         move_as_string = format_point(move_coord)
         if self.board.is_legal(move, color):
             self.board.play_move(move, color)
-            self.respond(move_as_string)
+            self.respond(move_as_string.lower())
         else:
             self.respond("resign")
 

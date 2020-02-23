@@ -145,3 +145,66 @@ if __name__ == "__main__":
         print(Rmove)
         state.display()
         input()
+
+def alphabetaNegamax(state,tt,timelimit,alpha,beta):
+    result = tt.lookup(state.code(tt))
+    if result != None:
+        return result
+    if state.is_game_ended():
+        result = state.statisticallyEvaluateForToPlay()
+        if result:
+            result = 1
+        else:
+            result = -1
+        return store_result(tt, state, result)
+
+    # next_state = state.copy()
+    for m in state.get_legal_moves(state.current_player):
+        # next_state.play_move(m, state.current_player)
+        # switch_toPlay(next_state)
+        # success = not negamax(next_state, tt)
+        # next_state = state.copy()
+
+        state.play_move(m, state.current_player)
+        value = -alphabetaNegamax(state,tt,timelimit,-beta,-alpha)
+        if value > alpha:
+            alpha = value
+
+        state.undo_move()
+
+        if value >= beta:
+            return store_result(tt,state, beta)
+
+    return store_result(tt,state,alpha)
+
+def timed_alphabeta_negamax(state, tt, timelimit):
+    signal.signal(signal.SIGALRM, immediately_evaluate)
+    signal.alarm(timelimit)
+    result = None
+
+    result = alphabetaNegamax_with_moves(state, tt,timelimit,-float("inf"),float("inf"))
+
+    signal.alarm(0)
+    return result
+
+def alphabetaNegamax_with_moves(state, tt, timelimit,alpha,beta):
+    all_moves = set()
+    for move in state.get_legal_moves(state.current_player):
+
+        state.play_move(move, state.current_player)
+
+        result = alphabetaNegamax(state, tt,timelimit,alpha, beta)
+
+        state.undo_move()
+
+        if (result == -1):
+            all_moves.add((True, move))
+            break
+        elif (result == 1):
+            all_moves.add(False)
+        elif (result == None):
+            all_moves.add(None)
+
+    result = eval_all_moves(all_moves)
+
+    return result
