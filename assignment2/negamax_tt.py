@@ -40,8 +40,13 @@ def negamax(state, tt, depth):
 
     noneFlag = False
 
-    for m in state.get_legal_moves(state.current_player):
+    # for m in state.get_legal_moves(state.current_player):
+    for m in state.get_empty_points():
+        if not state.is_legal(m, state.current_player):
+            continue
+
         state.play_move(m, state.current_player)
+
         success = negamax(state, tt, depth - 1)
 
         if (success != None):
@@ -65,7 +70,11 @@ def negamax(state, tt, depth):
 
 def negamax_with_moves(state, tt, depth):
     all_moves = set()
-    for move in state.get_legal_moves(state.current_player):
+
+    # for move in state.get_legal_moves(state.current_player):
+    for move in state.get_empty_points():
+        if not state.is_legal(move, state.current_player):
+            continue
 
         state.play_move(move, state.current_player)
 

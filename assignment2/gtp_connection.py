@@ -35,6 +35,7 @@ class GtpConnection():
         self.board = board
         self.timelimit = 1
         self.tt = TranspositionTable(self.board.size)
+        self.depth = 10
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
@@ -210,9 +211,7 @@ class GtpConnection():
     def solve_cmd(self, args):
         state = self.board.copy()
 
-        depth = 7 # + int(self.timelimit / 20)
-
-        result = solve(state, self.tt, depth, self.timelimit)
+        result = solve(state, self.tt, self.depth, self.timelimit)
 
         cur_color = int_to_color(self.board.current_player)
         opp_color = int_to_color(GoBoardUtil.opponent(self.board.current_player))
@@ -301,7 +300,7 @@ class GtpConnection():
         color = color_to_int(board_color)
 
         state = self.board.copy()
-        result = solve(state, self.tt, self.timelimit)
+        result = solve(state, self.tt, self.depth, self.timelimit)
 
         move = None
         if (type(result) == type(tuple())):

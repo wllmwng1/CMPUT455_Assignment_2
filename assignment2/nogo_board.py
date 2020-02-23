@@ -106,6 +106,16 @@ class NoGoBoard(object):
         b.board = np.copy(self.board)
         return b
 
+    def apply(self, new_board):
+        assert new_board.size == self.size
+        new_board.NS = self.NS
+        new_board.WE = self.WE
+        new_board.ko_capture = new_board.ko_capture
+        new_board.current_player = self.current_player
+        new_board.maxpoint = self.maxpoint
+        new_board.board = np.copy(self.board)
+        return
+
     def row_start(self, row):
         assert row >= 1
         assert row <= self.size
