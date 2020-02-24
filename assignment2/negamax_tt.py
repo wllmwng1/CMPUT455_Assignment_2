@@ -97,6 +97,15 @@ def negamax_with_moves(state, tt, depth, move_list=None):
     # print(state.moves)
     # print(get_priority(state))
 
+    result = None
+
+    if (state.is_game_ended() or depth <= 0):
+        result = state.statisticallyEvaluateForToPlay()
+        result = store_result(tt, state, result)
+        if (result == True):
+            return (True, PASS)
+        return result
+
     legal_moves = set(filter(state.is_legal_quick, move_list)) 
     priority_moves = get_priority(state) & legal_moves
   
