@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>Output: a2-sample.gtp</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="gogui-regress 1.5.1 (http://gogui.sf.net)">
+<style type="text/css">
+<!--
+body { margin:0; }
+span.comment { color:#999999; }
+span.fail { font-weight:bold; color:#ff5454; }
+span.error { font-weight:bold; color:#ffa954; }
+span.stderr { color:#666666; }
+span.invalid { background:#ff5454;}
+span.pass { font-weight:bold; color:#5eaf5e; }
+span.test { font-weight:bold; }
+-->
+</style>
+</head>
+<body bgcolor="white" text="black" link="#0000ee" vlink="#551a8b">
+<table border="0" width="100%" bgcolor="#91aee8" border="0">
+<tr><td>
+<h1>Output: a2-sample.gtp</h1>
+</td></tr>
+</table>
+<table width="100%" bgcolor="#e0e0e0">
+<tr><th align="left">Date:</th><td>February 24, 2020 at 12:42:30 AM MST</td></tr>
+<tr><th align="left">Host:</th><td>xubuntu-VM (AMD Ryzen 9 3900X 12-Core Processor)</td></tr>
+<tr><th align="left" valign="top">Command:</th>
+<td valign="top"><tt>Nogo.py</tt></td></tr>
+</table>
+<pre style="margin:1em">
+name
+= NoGoAssignment2
+
+version
+= 1.0
+
+cputime
+? Unknown command
+
+</pre>
+<hr style="margin:1em" size="1">
+<pre style="margin:1em">
+<span class="command">boardsize 2
+</span>= 
+
+<span class="command">clear_board
+</span>= 
+
+
+<span class="test"><a name="10">10 solve
+</a></span><span class="invalid">Invalid response: Time elapsed: 0.0019915650000000007
+</span><span class="test">#? [b a1|b a2|b b1|b b2]
+= b b2
+
+</span><span class="comment"># All four moves win so all these are correct answers
+</span>
+<span class="command">play b a1
+</span>= 
+
+
+<span class="test"><a name="20">20 solve
+</a></span><span class="invalid">Invalid response: Time elapsed: 0.0016973230000000006
+</span><span class="test">#? [b]
+= b
+
+</span><span class="comment"># comment: It was white's turn but white loses, so we do not write a move
+</span>
+<span class="command">play w a2
+</span>= 
+
+
+<span class="test"><a name="30">30 solve
+</a></span><span class="invalid">Invalid response: Time elapsed: 0.00030398000000000924
+</span><span class="test">#? [b b1]
+= b b1
+
+</span>
+<span class="command">boardsize 7
+</span>= 
+
+<span class="command">clear_board
+</span>= 
+
+
+<span class="test"><a name="40">40 solve
+</a>#? [unknown]
+= unknown
+
+</span><span class="comment"># too hard to solve
+</span>
+<span class="command">timelimit 100
+</span>= 
+
+
+<span class="test"><a name="50">50 solve
+</a>#? [unknown]
+= unknown
+
+</span><span class="comment"># Still too hard to solve
+</span>
+<span class="command">boardsize 2
+</span>= 
+
+<span class="command">clear_board
+</span>= 
+
+
+<span class="command">play b b2
+</span>= 
+
+<span class="command">play w a1
+</span>= 
+
+<span class="comment"># comment: the command line session has genmove's here, which can return several different correct moves. But we cannot
+# do the remaining tests if we do not know the response here.
+</span>
+<span class="test"><a name="60">60 genmove b
+</a></span><span class="invalid">Invalid response: Time elapsed: 0.0003583520000063345
+</span><span class="test">#? [a2|b1]
+= b1
+
+</span><span class="comment"># both moves win for b
+</span>
+<span class="test"><a name="70">70 genmove w
+</a></span><span class="invalid">Invalid response: Time elapsed: 0.0003359199999977136
+</span><span class="test">#? [resign]
+= resign
+
+</span><span class="comment"># white has no legal move
+</span></pre>
+<hr style="margin:1em" size="1">
+<pre style="margin:1em">
+</span>cputime
+? Unknown command
+
+quit
+= 
+
+</pre>
+<hr style="margin-bottom:0" size="1">
+<p style="margin-top:1; margin-right:5" align="right"><i><small>Generated on 2/24/20, 12:44 AM by gogui-regress 1.5.1 (<a href="http://gogui.sf.net">http://gogui.sf.net</a>)</small></i></p>
+</body>
+</html>
