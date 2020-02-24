@@ -93,8 +93,8 @@ def negamax(state, tt, depth, move_list=None):
 def negamax_with_moves(state, tt, depth, move_list=None):
     all_moves = set()
 
-    print(state.moves)
-    print(get_priority(state))
+    # print(state.moves)
+    # print(get_priority(state))
 
     legal_moves = set(filter(state.is_legal_quick, move_list)) 
     priority_moves = get_priority(state) & legal_moves
