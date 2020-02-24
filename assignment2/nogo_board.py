@@ -353,6 +353,8 @@ class NoGoBoard(object):
         legal = self.get_legal_moves(self.current_player)
         if len(legal) == 0:
             return False
+        # elif len(self.get_legal_moves(opponent(self.current_player))) == 0:
+        #     return True
         else:
             return True
 
@@ -363,6 +365,9 @@ class NoGoBoard(object):
                 point = coord_to_point(x+1,y+1,self.size)
                 c = c ^ tt.code[x*self.size+y][self.board[point]]
         return c
+
+    def updateCode(self,tt,c,x,y,color):
+        return c ^ tt.code[x-1*self.size+y-1][self.board[coord_to_point(x,y,self.size)]] ^ tt.code[x-1*self.size+y-1][color]
 
     def display(self):
         """

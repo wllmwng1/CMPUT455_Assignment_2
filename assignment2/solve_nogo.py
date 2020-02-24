@@ -22,10 +22,11 @@ def call_search(state, timelimit):
 def solve(state, tt=None, depth=1000, timelimit=10):
     if (tt == None):
         tt = TranspositionTable(state.size)
+        code = state.code(tt)
 
     result = None
     try:
-        result = timed_negamax_with_moves(state.copy(), tt, depth, timelimit)
+        result = timed_negamax_with_moves(state.copy(), tt, depth, timelimit, code)
     except TimeoutException:
         result = None
 
@@ -34,9 +35,9 @@ def solve(state, tt=None, depth=1000, timelimit=10):
 
 def solve_no_go():
     print("Solving NoGo")
-    state = NoGoBoard(4)
+    state = NoGoBoard(3)
 
-    result = solve(state, None, 100)
+    result = solve(state, None,timelimit= 100)
     print(result)
 
     return

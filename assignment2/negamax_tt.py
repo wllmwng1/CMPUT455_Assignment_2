@@ -12,8 +12,8 @@ def immediately_evaluate(signum, frame):
     raise TimeoutException("TIMELIMIT ERROR: timed out");
 
 
-def store_result(tt, state, result):
-    tt.store(state.code(tt), result)
+def store_result(tt, state, result, code):
+    tt.store(code, result)
     return result
 
 
@@ -30,33 +30,37 @@ def switch_toPlay(state):
     return
 
 
-def negamax(state, tt, depth):
-    result = tt.lookup(state.code(tt))
+def negamax(state, tt, depth,code):
+    result = tt.lookup(code)
     if result != None:
         return result
-    if (state.is_game_ended() or depth <= 0):
+    if (state.is_game_ended()):
         result = state.statisticallyEvaluateForToPlay()
-        return store_result(tt, state, result)
+        return store_result(tt, state, result, code)
 
     for m in state.get_legal_moves(state.current_player):
+        x,y = state._point_to_coord(m)
+        c = state.updateCode(tt,code,x,y,state.current_player)
         state.play_move(m, state.current_player)
-        success = not negamax(state, tt, depth - 1)
+        success = not negamax(state, tt, depth - 1, c)
+        c = state.updateCode(tt,code,x,y,EMPTY)
         state.undo_move()
 
         if success:
-            return store_result(tt, state, True)
+            return store_result(tt, state, True, code)
 
-    return store_result(tt, state, False)
+    return store_result(tt, state, False, code)
 
 
-def negamax_with_moves(state, tt, depth):
+def negamax_with_moves(state, tt, depth, code):
     all_moves = set()
     for move in state.get_legal_moves(state.current_player):
-
+        x,y = state._point_to_coord(move)
+        c = state.updateCode(tt,code,x,y,state.current_player)
         state.play_move(move, state.current_player)
 
-        result = negamax(state, tt, depth - 1)
-
+        result = negamax(state, tt, depth - 1, c)
+        c = state.updateCode(tt,code,x,y,EMPTY)
         state.undo_move()
 
         if (result == False):
@@ -82,11 +86,11 @@ def timed_negamax(state, tt, depth, timelimit):
     signal.alarm(0)
     return result
 
-def timed_negamax_with_moves(state, tt, depth, timelimit):
+def timed_negamax_with_moves(state, tt, depth, timelimit, code):
     signal.signal(signal.SIGALRM, immediately_evaluate)
     signal.alarm(timelimit)
 
-    result = negamax_with_moves(state, tt, depth)
+    result = negamax_with_moves(state, tt, depth,code)
 
     signal.alarm(0)
 
