@@ -68,13 +68,8 @@ def negamax(state, tt, depth, move_list=None):
     legal_moves = legal_moves - priority_moves
 
     for m in legal_moves:
-<<<<<<< HEAD
-        state.play_move(m, state.current_player)
-
-=======
         state.play_blind(m, state.current_player)
 
->>>>>>> d7a49a4f32de6a461022cbce553c4f584a18aabe
         success = negamax(state, tt, depth - 1, move_list - {m})
 
         if (success != None):

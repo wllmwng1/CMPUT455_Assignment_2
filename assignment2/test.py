@@ -21,11 +21,11 @@ def main():
     opp = GoBoardUtil.opponent(cur)
 
     state.play_move(move_to_point("a4"), cur);
-    state.play_move(move_to_point("a2"), opp);
-    state.play_move(move_to_point("d1"), cur);
-    state.play_move(move_to_point("d2"), opp);
+    # state.play_move(move_to_point("a2"), opp);
+    # state.play_move(move_to_point("d1"), cur);
+    # state.play_move(move_to_point("d2"), opp);
     # state.play_move(move_to_point("d3"), cur);
-    
+
     result = solve(state, tt, DEPTH, TIMELIMIT)
 
     print(str(result))
@@ -33,4 +33,3 @@ def main():
 if __name__ == "__main__":
     cProfile.run("main()")
     # main()
-
