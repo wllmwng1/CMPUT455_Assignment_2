@@ -22,6 +22,10 @@ class NoGoBoard(object):
     def pt(self, row, col):
         return coord_to_point(row, col, self.size)
 
+    def is_legal_quick(self, point):
+        color = self.current_player
+        return self.is_legal(point, color)
+
     def is_legal(self, point, color):
         """
         Check whether it is legal for color to play on point
@@ -104,6 +108,7 @@ class NoGoBoard(object):
         b.current_player = self.current_player
         assert b.maxpoint == self.maxpoint
         b.board = np.copy(self.board)
+        b.moves = self.moves[:]
         return b
 
     def apply(self, new_board):

@@ -35,6 +35,7 @@ class GtpConnection():
         self.go_engine = go_engine
         self.board = board
         self.timelimit = 1
+        self.depth = 20
         self.tt = TranspositionTable(self.board.size)
         self.depth = 10
         self.commands = {
@@ -283,7 +284,10 @@ class GtpConnection():
                 self.error("Error executing move {} converted from {}"
                            .format(move, args[1]))
                 return
-            if not self.board.play_move(move, color):
+
+            legal = self.board.play_move(move, color)
+
+            if not legal:
                 self.respond("illegal move: \"{} {}\" ".format(args[0], board_move))
                 return
             else:

@@ -1,2 +1,6 @@
 #Tests	FAIL	fail	PASS	pass	Error	Time	CpuTime
+<<<<<<< HEAD
 11	3	0	0	8	0	435.7	0	
+=======
+11	5	0	0	6	0	541.7	0	
+>>>>>>> 0526562645f1f6b5dffe62312d999a82ecad5dc1
