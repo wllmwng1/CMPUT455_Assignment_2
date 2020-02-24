@@ -6,14 +6,14 @@ from timeout_exception import TimeoutException
 import time
 import signal
 from random import randint
-import numpy as np
+
 
 def immediately_evaluate(signum, frame):
     raise TimeoutException("TIMELIMIT ERROR: timed out");
 
 
-def store_result(tt, state, result, code):
-    tt.store(code, result)
+def store_result(tt, state, result):
+    tt.store(state.code(tt), result)
     return result
 
 
@@ -40,41 +40,61 @@ def negamax(state, tt, depth, move_list=None):
     result = tt.lookup(state.code(tt))
     if result != None:
         return result
-    if (state.is_game_ended()):
+    if (state.is_game_ended() or depth <= 0):
         result = state.statisticallyEvaluateForToPlay()
-        return store_result(tt, state, result, code)
+        return store_result(tt, state, result)
 
     noneFlag = False
 
-    for m in move_list:
-        if not (state.is_legal(m, state.current_player)):
-            continue
+    legal_moves = set(filter(state.is_legal_quick, move_list))
+    priority_moves = get_priority(state) & legal_moves
 
-        # for m in state.get_legal_moves(state.current_player):
-
+    for m in priority_moves:
         state.play_move(m, state.current_player)
 
         success = negamax(state, tt, depth - 1, move_list - {m})
-
 
         if (success != None):
             success = not success
         else:
             noneFlag = True
 
-        if success:
-            return store_result(tt, state, True, code)
+        state.undo_move()
 
-    return store_result(tt, state, False, code)
+        if success:
+            return store_result(tt, state, True)
+
+    legal_moves = legal_moves - priority_moves
+
+    for m in legal_moves:
+        state.play_move(m, state.current_player)
+
+        success = negamax(state, tt, depth - 1, move_list - {m})
+
+        if (success != None):
+            success = not success
+        else:
+            noneFlag = True
+
+        state.undo_move()
+
+        if success:
+            return store_result(tt, state, True)
+
+    result = None
+    if (noneFlag):
+        result = store_result(tt, state, None)
+    else:
+        result = store_result(tt, state, False)
+
+    return result
 
 
 def negamax_with_moves(state, tt, depth, move_list=None):
     all_moves = set()
 
-    test_move = state.moves
-    print(test_move)
-
-    print(get_priority(state))
+    # print(state.moves)
+    # print(get_priority(state))
 
     legal_moves = set(filter(state.is_legal_quick, move_list))
     priority_moves = get_priority(state) & legal_moves
@@ -94,9 +114,9 @@ def negamax_with_moves(state, tt, depth, move_list=None):
         elif (result == None):
             all_moves.add(None)
 
-    for m in legal_moves:
-        # for m in state.get_legal_moves(state.current_player):
+    legal_moves = legal_moves - priority_moves
 
+    for m in legal_moves:
         state.play_move(m, state.current_player)
 
         result = negamax(state, tt, depth - 1, move_list - {m})
@@ -126,7 +146,7 @@ def timed_negamax(state, tt, depth, timelimit):
     signal.alarm(0)
     return result
 
-def timed_negamax_with_moves(state, tt, depth, timelimit, code):
+def timed_negamax_with_moves(state, tt, depth, timelimit):
     signal.signal(signal.SIGALRM, immediately_evaluate)
     signal.alarm(timelimit)
 
@@ -152,7 +172,8 @@ def eval_all_moves(all_moves):
 
     return None
 
-def walk_through():
+
+if __name__ == "__main__":
     board_size = 4
     depth = 10
     timelimit = 3
@@ -182,17 +203,6 @@ def walk_through():
         print(Rmove)
         state.display()
         input()
-
-if __name__ == "__main__":
-    state = NoGoBoard(4)
-
-    s = set(state.get_empty_points())
-
-    s.remove(6)
-
-    print(s)
-
-    print(set(state.get_empty_points()))
 
 def alphabetaNegamax(state,tt,timelimit,alpha,beta):
     result = tt.lookup(state.code(tt))

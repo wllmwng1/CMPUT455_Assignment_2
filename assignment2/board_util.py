@@ -27,14 +27,14 @@ Encoding of "not a real point", used as a marker
 NULLPOINT = 0
 
 """
-The largest board we allow. 
+The largest board we allow.
 To support larger boards the coordinate printing needs to be changed.
 """
 MAXSIZE = 25
 
 """
 where1d: Helper function for using np.where with 1-d arrays.
-The result of np.where is a tuple which contains the indices 
+The result of np.where is a tuple which contains the indices
 of elements that fulfill the condition.
 For 1-d arrays, this is a singleton tuple.
 The [0] indexing is needed toextract the result from the singleton tuple.
@@ -54,13 +54,13 @@ def coord_to_point(row, col, boardsize):
     Returns
     -------
     point
-    
+
     Map (row, col) coordinates to array index
     Below is an example of numbering points on a 3x3 board.
-    Spaces are added for illustration to separate board points 
+    Spaces are added for illustration to separate board points
     from BORDER points.
     There is a one point BORDER between consecutive rows (e.g. point 12).
-    
+
     16   17 18 19   20
 
     12   13 14 15
@@ -90,7 +90,7 @@ def coord_to_point(row, col, boardsize):
     return NS * row + col
 
 class GoBoardUtil(object):
-    
+
     @staticmethod
     def generate_legal_moves(board, color):
         """
@@ -107,11 +107,11 @@ class GoBoardUtil(object):
         moves = board.get_empty_points()
         legal_moves = []
         for move in moves:
-            if board.is_legal(move, color):
+            if board.dumb_legal(move, color):
                 legal_moves.append(move)
         return legal_moves
 
-    @staticmethod       
+    @staticmethod
     def generate_random_move(board, color, use_eye_filter):
         """
         Generate a random move.
@@ -128,14 +128,14 @@ class GoBoardUtil(object):
         np.random.shuffle(moves)
         for move in moves:
             legal = not (use_eye_filter and board.is_eye(move, color)) \
-                    and board.is_legal(move, color)
+                    and board.dumb_legal(move, color)
             if legal:
                 return move
         return PASS
 
     @staticmethod
     def opponent(color):
-        return WHITE + BLACK - color    
+        return WHITE + BLACK - color
 
     @staticmethod
     def get_twoD_board(goboard):
