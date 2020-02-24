@@ -28,8 +28,9 @@ def solve(state, tt=None, depth=1000, timelimit=10):
 
     result = None
     try:
+        additional_depth = int(timelimit / 10)
         start_time = time.process_time()
-        result = timed_negamax_with_moves(state.copy(), tt, depth, timelimit)
+        result = timed_negamax_with_moves(state.copy(), tt, depth + additional_depth, timelimit)
         end_time = time.process_time()
         print("Time elapsed: {}".format(end_time - start_time))
     except TimeoutException:

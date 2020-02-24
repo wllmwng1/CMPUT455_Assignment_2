@@ -46,12 +46,27 @@ def negamax(state, tt, depth, move_list=None):
 
     noneFlag = False
 
-    for m in move_list:
-        if not (state.is_legal(m, state.current_player)):
-            continue
+    legal_moves = set(filter(state.is_legal_quick, move_list)) 
+    priority_moves = get_priority(state) & legal_moves
+    
+    for m in priority_moves:
+        state.play_move(m, state.current_player)
 
-        # for m in state.get_legal_moves(state.current_player):
+        success = negamax(state, tt, depth - 1, move_list - {m})
 
+        if (success != None):
+            success = not success
+        else:
+            noneFlag = True
+
+        state.undo_move()
+
+        if success:
+            return store_result(tt, state, True)
+
+    legal_moves = legal_moves - priority_moves
+
+    for m in legal_moves:
         state.play_move(m, state.current_player)
         
         success = negamax(state, tt, depth - 1, move_list - {m})
@@ -78,9 +93,7 @@ def negamax(state, tt, depth, move_list=None):
 def negamax_with_moves(state, tt, depth, move_list=None):
     all_moves = set()
 
-    test_move = state.moves
-    print(test_move)
-
+    print(state.moves)
     print(get_priority(state))
 
     legal_moves = set(filter(state.is_legal_quick, move_list)) 
@@ -101,9 +114,9 @@ def negamax_with_moves(state, tt, depth, move_list=None):
         elif (result == None):
             all_moves.add(None)
 
-    for m in legal_moves:
-        # for m in state.get_legal_moves(state.current_player):
+    legal_moves = legal_moves - priority_moves
 
+    for m in legal_moves:
         state.play_move(m, state.current_player)
 
         result = negamax(state, tt, depth - 1, move_list - {m})
