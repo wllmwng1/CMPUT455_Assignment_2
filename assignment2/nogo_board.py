@@ -24,7 +24,16 @@ class NoGoBoard(object):
 
     def is_legal_quick(self, point):
         color = self.current_player
-        return self.is_legal(point, color)
+        return self.dumb_legal(point, color)
+
+    def dumb_legal(self,point,color):
+        try:
+            legal = self.play_move(point, color)
+            if (legal):
+                self.undo_move()
+        except ValueError:
+            return False
+        return legal
 
     def is_legal(self, point, color):
         """
@@ -55,7 +64,8 @@ class NoGoBoard(object):
 
         move = GoBoardUtil.generate_random_move(self, current_player, False)
 
-        is_ended = not self.is_legal(move, current_player)
+        # is_ended = not self.is_legal(move, current_player)
+        is_ended = not self.dumb_legal(move, current_player)
 
         return is_ended
 
@@ -282,7 +292,8 @@ class NoGoBoard(object):
         for nb in neighbors:
             if self.board[nb] == opp_color:
                 single_capture = self._detect_and_process_capture(nb)
-                if single_capture == True:
+                if single_capture == True: # undo capture move
+                    self.board[point] = EMPTY
                     raise ValueError("capture")
         if not self._stone_has_liberty(point):
             # check suicide of whole block
