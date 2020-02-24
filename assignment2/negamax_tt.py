@@ -1,6 +1,7 @@
 from nogo_board import NoGoBoard
 from board_util import GoBoardUtil, \
-                        BLACK, WHITE, EMPTY
+                        BLACK, WHITE, EMPTY, \
+                        BORDER, PASS, MAXSIZE
 from transposition_table import TranspositionTable
 from timeout_exception import TimeoutException
 import time
@@ -50,7 +51,7 @@ def negamax(state, tt, depth, move_list=None):
     priority_moves = get_priority(state) & legal_moves
 
     for m in priority_moves:
-        state.play_move(m, state.current_player)
+        state.play_blind(m, state.current_player)
 
         success = negamax(state, tt, depth - 1, move_list - {m})
 
@@ -67,8 +68,13 @@ def negamax(state, tt, depth, move_list=None):
     legal_moves = legal_moves - priority_moves
 
     for m in legal_moves:
+<<<<<<< HEAD
         state.play_move(m, state.current_player)
 
+=======
+        state.play_blind(m, state.current_player)
+
+>>>>>>> d7a49a4f32de6a461022cbce553c4f584a18aabe
         success = negamax(state, tt, depth - 1, move_list - {m})
 
         if (success != None):
@@ -96,11 +102,25 @@ def negamax_with_moves(state, tt, depth, move_list=None):
     # print(state.moves)
     # print(get_priority(state))
 
+    result = None
+
+    if (state.is_game_ended() or depth <= 0):
+        result = state.statisticallyEvaluateForToPlay()
+        result = store_result(tt, state, result)
+        if (result == True):
+            return (True, PASS)
+        return result
+
     legal_moves = set(filter(state.is_legal_quick, move_list))
     priority_moves = get_priority(state) & legal_moves
 
-    for m in priority_moves:
-        state.play_move(m, state.current_player)
+    ordered_priority_moves = list(priority_moves)
+    ordered_priority_moves.sort()
+
+    for m in ordered_priority_moves:
+        # print(format_point(point_to_coord(m, state.size)))
+
+        state.play_blind(m, state.current_player)
 
         result = negamax(state, tt, depth - 1, move_list - {m})
 
@@ -117,7 +137,7 @@ def negamax_with_moves(state, tt, depth, move_list=None):
     legal_moves = legal_moves - priority_moves
 
     for m in legal_moves:
-        state.play_move(m, state.current_player)
+        state.play_blind(m, state.current_player)
 
         result = negamax(state, tt, depth - 1, move_list - {m})
 
@@ -261,6 +281,18 @@ def alphabetaNegamax_with_moves(state, tt, timelimit,alpha,beta):
     result = eval_all_moves(all_moves)
 
     return result
+
+def point_to_coord(point, boardsize):
+    """
+    Transform point given as board array index
+    to (row, col) coordinate representation.
+    Special case: PASS is not transformed
+    """
+    if point == PASS:
+        return PASS
+    else:
+        NS = boardsize + 1
+        return divmod(point, NS)
 
 def format_point(move):
     """

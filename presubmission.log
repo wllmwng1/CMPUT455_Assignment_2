@@ -1,0 +1,26 @@
+Script started on 2020-02-24 01:11:01-0700
+rm -rdf test_session_A2/
+mkdir test_session_A2
+cp assignment2.tgz test_session_A1/assignment2.tgz
+cd test_session_A1/
+tar -xf assignment2.tgz
+cd assignment2
+gogui-regress ./Nogo.py assignment2-public-tests.gtp
+gogui-regress ./Nogo.py a2-sample.gtp
+exit
+
+#]0;xubuntu@xubuntu-VM: ~/Project/second_folder/CMPUT455_Assignment_2[01;32mxubuntu@xubuntu-VM[00m:[01;34m~/Project/second_folder/CMPUT455_Assignment_2[00m$ rm -rdf test_session_A2/
+]0;xubuntu@xubuntu-VM: ~/Project/second_folder/CMPUT455_Assignment_2[01;32mxubuntu@xubuntu-VM[00m:[01;34m~/Project/second_folder/CMPUT455_Assignment_2[00m$ mkdir test_session_A2
+]0;xubuntu@xubuntu-VM: ~/Project/second_folder/CMPUT455_Assignment_2[01;32mxubuntu@xubuntu-VM[00m:[01;34m~/Project/second_folder/CMPUT455_Assignment_2[00m$ cp assignment2.tgz test_session_A1/assignment2.tgz [A
+cp: cannot create regular file 'test_session_A1/assignment2.tgz': No such file or directory
+]0;xubuntu@xubuntu-VM: ~/Project/second_folder/CMPUT455_Assignment_2[01;32mxubuntu@xubuntu-VM[00m:[01;34m~/Project/second_folder/CMPUT455_Assignment_2[00m$ cd test_session_A1/
+bash: cd: test_session_A1/: No such file or directory
+]0;xubuntu@xubuntu-VM: ~/Project/second_folder/CMPUT455_Assignment_2[01;32mxubuntu@xubuntu-VM[00m:[01;34m~/Project/second_folder/CMPUT455_Assignment_2[00m$ tar -xf assignment2.tgz
+]0;xubuntu@xubuntu-VM: ~/Project/second_folder/CMPUT455_Assignment_2[01;32mxubuntu@xubuntu-VM[00m:[01;34m~/Project/second_folder/CMPUT455_Assignment_2[00m$ cd assignment2
+]0;xubuntu@xubuntu-VM: ~/Project/second_folder/CMPUT455_Assignment_2/assignment2[01;32mxubuntu@xubuntu-VM[00m:[01;34m~/Project/second_folder/CMPUT455_Assignment_2/assignment2[00m$ gogui-regress ./Nogo.py assignment2-pubblic-tests.gtp
+60 unexpected FAIL: Correct 'w d1', got 'unknown'
+]0;xubuntu@xubuntu-VM: ~/Project/second_folder/CMPUT455_Assignment_2/assignment2[01;32mxubuntu@xubuntu-VM[00m:[01;34m~/Project/second_folder/CMPUT455_Assignment_2/assignment2[00m$ gogui-regress ./Nogo.py a2-sample.gtp
+]0;xubuntu@xubuntu-VM: ~/Project/second_folder/CMPUT455_Assignment_2/assignment2[01;32mxubuntu@xubuntu-VM[00m:[01;34m~/Project/second_folder/CMPUT455_Assignment_2/assignment2[00m$ exit
+exit
+
+Script done on 2020-02-24 01:18:50-0700
