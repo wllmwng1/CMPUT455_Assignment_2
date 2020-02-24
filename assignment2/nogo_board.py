@@ -106,6 +106,16 @@ class NoGoBoard(object):
         b.board = np.copy(self.board)
         return b
 
+    def apply(self, new_board):
+        assert new_board.size == self.size
+        self.NS = new_board.NS
+        self.WE = new_board.WE
+        self.ko_recapture = new_board.ko_recapture
+        self.current_player = new_board.current_player
+        self.maxpoint = new_board.maxpoint
+        self.board = np.copy(new_board.board)
+        return
+
     def row_start(self, row):
         assert row >= 1
         assert row <= self.size
@@ -287,6 +297,51 @@ class NoGoBoard(object):
         self.current_player = GoBoardUtil.opponent(color)
         return True
 
+    def quicker_legal(self, point):
+
+        color = self.current_player
+
+        if point == PASS:
+            return False
+        elif self.board[point] != EMPTY:
+            return False
+        if point == self.ko_recapture:
+            return False
+
+        # General case: deal with captures, suicide, and next ko point
+        opp_color = GoBoardUtil.opponent(color)
+        in_enemy_eye = self._is_surrounded(point, opp_color)
+
+        if in_enemy_eye:
+            return False
+
+        single_captures = []
+
+        self.board[point] = color
+
+        neighbors = self.neighbors[point]
+
+        for nb in neighbors:
+            if self.board[nb] == opp_color:
+                if self._detect_capture(nb):
+                    self.board[point] = EMPTY
+                    return False
+
+        if not self._stone_has_liberty(point):
+            # check suicide of whole block
+            block = self._block_of(point)
+            if not self._has_liberty(block): # undo suicide move
+                self.board[point] = EMPTY
+                return False
+
+        self.board[point] = EMPTY
+        return True
+
+    def blind_play(self, point, color):
+        self.board[point] = color
+        self.moves.append([point, self.current_player])
+        self.current_player = GoBoardUtil.opponent(color)
+
     def undo_move(self):
         data = self.moves.pop()
         self.board[data[0]] = EMPTY
@@ -350,13 +405,16 @@ class NoGoBoard(object):
         Whether or not the current player won.
         """
 
-        legal = self.get_legal_moves(self.current_player)
-        if len(legal) == 0:
+        cur_legal_moves = self.get_legal_moves(self.current_player)
+        opp_legal_moves = self.get_legal_moves(GoBoardUtil.opponent(self.current_player))
+
+        if len(cur_legal_moves) == 0:
             return False
-        # elif len(self.get_legal_moves(opponent(self.current_player))) == 0:
-        #     return True
-        else:
+
+        if len(opp_legal_moves) == 0:
             return True
+
+        return None
 
     def code(self,tt):
         c = 0
