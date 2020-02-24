@@ -254,6 +254,11 @@ class NoGoBoard(object):
             return True
         return False
 
+    def play_blind(self, point, color):
+        self.board[point] = color
+        self.moves.append([point, self.current_player])
+        self.current_player = GoBoardUtil.opponent(color)
+        
     def play_move(self, point, color):
         """
         Play a move of color on point
@@ -291,6 +296,41 @@ class NoGoBoard(object):
         self.moves.append([point,self.current_player])
         self.current_player = GoBoardUtil.opponent(color)
         return True
+
+    def quick_legal(self, point, color):
+        # Special cases
+        if point == PASS:
+            return False
+        elif self.board[point] != EMPTY:
+            return False
+        if point == self.ko_recapture:
+            return False
+
+        opp_color = GoBoardUtil.opponent(color)
+        in_enemy_eye = self._is_surrounded(point, opp_color)
+        
+        self.board[point] = color
+
+        single_captures = []
+        neighbors = self.neighbors[point]
+        
+        for nb in neighbors:
+            if self.board[nb] == opp_color:
+                single_capture = self._detect_capture(nb)
+                if single_capture == True:
+                    self.board[point] = EMPTY
+                    return False
+        
+        if not self._stone_has_liberty(point):
+            # check suicide of whole block
+            block = self._block_of(point)
+            if not self._has_liberty(block): # undo suicide move
+                self.board[point] = EMPTY
+                return False
+
+        self.board[point] = EMPTY
+
+        return True 
 
     def undo_move(self):
         data = self.moves.pop()

@@ -34,7 +34,7 @@ class GtpConnection():
         self.go_engine = go_engine
         self.board = board
         self.timelimit = 1
-        self.depth = 20
+        self.depth = 15
         self.tt = TranspositionTable(self.board.size)
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
