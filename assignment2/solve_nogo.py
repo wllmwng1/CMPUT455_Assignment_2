@@ -41,7 +41,7 @@ def solve(state, tt=None, depth=1000, timelimit=10):
 
 def solve_no_go():
     print("Solving NoGo")
-    state = NoGoBoard(3)
+    state = NoGoBoard(4)
 
     result = solve(state, None, 100)
     print(result)

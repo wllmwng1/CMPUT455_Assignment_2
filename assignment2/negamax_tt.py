@@ -14,15 +14,7 @@ def immediately_evaluate(signum, frame):
 
 
 def store_result(tt, state, result):
-    if (result == None):
-        return result
-    
-    codes = state.code_all(tt)
-    for c in codes:
-        tt.store(c, result)
-    
-    #tt.store(state.code(tt), result)
-    
+    tt.store(state.code(tt), result)
     return result
 
 
@@ -55,7 +47,7 @@ def negamax(state, tt, depth, move_list=None):
 
     noneFlag = False
 
-    legal_moves = set(filter(state.is_legal_quick, move_list))
+    legal_moves = set(filter(state.is_legal_quick, move_list)) 
     priority_moves = get_priority(state) & legal_moves
 
     for m in priority_moves:
@@ -77,7 +69,7 @@ def negamax(state, tt, depth, move_list=None):
 
     for m in legal_moves:
         state.play_blind(m, state.current_player)
-
+        
         success = negamax(state, tt, depth - 1, move_list - {m})
 
         if (success != None):
@@ -92,7 +84,7 @@ def negamax(state, tt, depth, move_list=None):
 
     result = None
     if (noneFlag):
-        result = None # store_result(tt, state, None)
+        result = store_result(tt, state, None)
     else:
         result = store_result(tt, state, False)
 
@@ -101,6 +93,9 @@ def negamax(state, tt, depth, move_list=None):
 
 def negamax_with_moves(state, tt, depth, move_list=None):
     all_moves = set()
+
+    # print(state.moves)
+    # print(get_priority(state))
 
     result = None
 
@@ -111,11 +106,11 @@ def negamax_with_moves(state, tt, depth, move_list=None):
             return (True, PASS)
         return result
 
-    legal_moves = set(filter(state.is_legal_quick, move_list))
+    legal_moves = set(filter(state.is_legal_quick, move_list)) 
     priority_moves = get_priority(state) & legal_moves
-
+  
     ordered_priority_moves = list(priority_moves)
-    ordered_priority_moves.sort()
+    ordered_priority_moves.sort() 
 
     for m in ordered_priority_moves:
         # print(format_point(point_to_coord(m, state.size)))
@@ -306,3 +301,5 @@ def format_point(move):
     if not 0 <= row < MAXSIZE or not 0 <= col < MAXSIZE:
         raise ValueError
     return column_letters[col - 1]+ str(row)
+
+

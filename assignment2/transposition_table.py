@@ -10,9 +10,5 @@ class TranspositionTable():
     def store(self, code, score):
         self.table[code] = score
 
-    def store_all(self, codes, score):
-        for c in codes:
-            self.table[c] = score
-
     def lookup(self, code):
         return self.table.get(code)

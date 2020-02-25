@@ -16,7 +16,6 @@ import numpy as np
 import re
 import time
 import random
-import cProfile
 
 class GtpConnection():
 
@@ -37,7 +36,6 @@ class GtpConnection():
         self.timelimit = 1
         self.depth = 15
         self.tt = TranspositionTable(self.board.size)
-        self.depth = 10
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,

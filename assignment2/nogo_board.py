@@ -121,16 +121,6 @@ class NoGoBoard(object):
         b.moves = self.moves[:]
         return b
 
-    def apply(self, new_board):
-        assert new_board.size == self.size
-        self.NS = new_board.NS
-        self.WE = new_board.WE
-        self.ko_recapture = new_board.ko_recapture
-        self.current_player = new_board.current_player
-        self.maxpoint = new_board.maxpoint
-        self.board = np.copy(new_board.board)
-        return
-
     def row_start(self, row):
         assert row >= 1
         assert row <= self.size
@@ -278,7 +268,7 @@ class NoGoBoard(object):
         self.board[point] = color
         self.moves.append([point, self.current_player])
         self.current_player = GoBoardUtil.opponent(color)
-
+        
     def play_move(self, point, color):
         """
         Play a move of color on point
@@ -329,19 +319,19 @@ class NoGoBoard(object):
 
         opp_color = GoBoardUtil.opponent(color)
         in_enemy_eye = self._is_surrounded(point, opp_color)
-
+        
         self.board[point] = color
 
         single_captures = []
         neighbors = self.neighbors[point]
-
+        
         for nb in neighbors:
             if self.board[nb] == opp_color:
                 single_capture = self._detect_capture(nb)
                 if single_capture == True:
                     self.board[point] = EMPTY
                     return False
-
+        
         if not self._stone_has_liberty(point):
             # check suicide of whole block
             block = self._block_of(point)
@@ -351,7 +341,7 @@ class NoGoBoard(object):
 
         self.board[point] = EMPTY
 
-        return True
+        return True 
 
     def undo_move(self):
         data = self.moves.pop()
@@ -434,29 +424,6 @@ class NoGoBoard(object):
                 point = coord_to_point(x+1,y+1,self.size)
                 c = c ^ tt.code[x*self.size+y][self.board[point]]
         return c
-    
-    def code_all(self,tt):
-        twoDBoard0 = GoBoardUtil.get_twoD_board(self)
-        twoDBoard1 = np.flip(twoDBoard0, 0)
-        twoDBoard2 = np.flip(twoDBoard0, 1)
-        twoDBoard3 = np.flip(twoDBoard1, 1)
-        
-        twoDBoards = [twoDBoard0, twoDBoard1, twoDBoard2, twoDBoard3]
-        
-        return [self.hash_board(self.size, tt, b) for b in twoDBoards]
-    
-    def hash_board(self, size, tt, twoDBoard):
-        c = 0
-        i = 0
-        for x in range(self.size):
-            for y in range(self.size):
-                value = twoDBoard[x][y]
-                c = c ^ tt.code[i][value]
-                i += 1
-        return c
-
-    def updateCode(self,tt,c,x,y,color):
-        return c ^ tt.code[x-1*self.size+y-1][self.board[coord_to_point(x,y,self.size)]] ^ tt.code[x-1*self.size+y-1][color]
 
     def display(self):
         """
