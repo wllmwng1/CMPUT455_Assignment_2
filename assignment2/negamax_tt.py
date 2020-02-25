@@ -14,12 +14,15 @@ def immediately_evaluate(signum, frame):
 
 
 def store_result(tt, state, result):
-    #codes = state.code_all(tt)
+    if (result == None):
+        return result
     
-    #for c in codes:
-    #    tt.store(c, result)
+    codes = state.code_all(tt)
+    for c in codes:
+        tt.store(c, result)
     
-    tt.store(state.code(tt), result)
+    #tt.store(state.code(tt), result)
+    
     return result
 
 
@@ -89,7 +92,7 @@ def negamax(state, tt, depth, move_list=None):
 
     result = None
     if (noneFlag):
-        result = store_result(tt, state, None)
+        result = None # store_result(tt, state, None)
     else:
         result = store_result(tt, state, False)
 
