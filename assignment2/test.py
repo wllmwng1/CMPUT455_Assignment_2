@@ -20,16 +20,43 @@ def main():
     cur = state.current_player
     opp = GoBoardUtil.opponent(cur)
 
-    state.play_move(move_to_point("a4"), cur);
+    state0 = state.copy()
+    state1 = state.copy()
+    state2 = state.copy()
+    state3 = state.copy()
+
+    state0.play_move(move_to_point("a1"), cur);
+    state1.play_move(move_to_point("a4"), cur);
+    state2.play_move(move_to_point("d1"), cur);
+    state3.play_move(move_to_point("d4"), cur);
+
+    #print(state0.board)
+    #print(state1.board)
+    #print(state2.board)
+    #print(state3.board)
+
+    # state.play_move(move_to_point("a4"), cur);
     # state.play_move(move_to_point("a2"), opp);
     # state.play_move(move_to_point("d1"), cur);
     # state.play_move(move_to_point("d2"), opp);
     # state.play_move(move_to_point("d3"), cur);
 
-    result = solve(state, tt, DEPTH, TIMELIMIT)
+    for i in state0.code_all(tt):
+        print(i)
 
-    print(str(result))
+    print()
+
+    print(state0.code(tt))
+    print(state1.code(tt))
+    print(state2.code(tt))
+    print(state3.code(tt))
+    
+
+    
+    # result = solve(state, tt, DEPTH, TIMELIMIT)
+
+    # print(str(result))
 
 if __name__ == "__main__":
-    cProfile.run("main()")
-    # main()
+    # cProfile.run("main()")
+    main()

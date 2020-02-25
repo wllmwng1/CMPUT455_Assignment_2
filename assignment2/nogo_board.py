@@ -434,6 +434,26 @@ class NoGoBoard(object):
                 point = coord_to_point(x+1,y+1,self.size)
                 c = c ^ tt.code[x*self.size+y][self.board[point]]
         return c
+    
+    def code_all(self,tt):
+        twoDBoard0 = GoBoardUtil.get_twoD_board(self)
+        twoDBoard1 = np.flip(twoDBoard0, 0)
+        twoDBoard2 = np.flip(twoDBoard0, 1)
+        twoDBoard3 = np.flip(twoDBoard1, 1)
+        
+        twoDBoards = [twoDBoard0, twoDBoard1, twoDBoard2, twoDBoard3]
+        
+        return [self.hash_board(self.size, tt, b) for b in twoDBoards]
+    
+    def hash_board(self, size, tt, twoDBoard):
+        c = 0
+        i = 0
+        for x in range(self.size):
+            for y in range(self.size):
+                value = twoDBoard[x][y]
+                c = c ^ tt.code[i][value]
+                i += 1
+        return c
 
     def updateCode(self,tt,c,x,y,color):
         return c ^ tt.code[x-1*self.size+y-1][self.board[coord_to_point(x,y,self.size)]] ^ tt.code[x-1*self.size+y-1][color]

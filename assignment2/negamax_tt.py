@@ -14,6 +14,11 @@ def immediately_evaluate(signum, frame):
 
 
 def store_result(tt, state, result):
+    #codes = state.code_all(tt)
+    
+    #for c in codes:
+    #    tt.store(c, result)
+    
     tt.store(state.code(tt), result)
     return result
 
@@ -93,9 +98,6 @@ def negamax(state, tt, depth, move_list=None):
 
 def negamax_with_moves(state, tt, depth, move_list=None):
     all_moves = set()
-
-    # print(state.moves)
-    # print(get_priority(state))
 
     result = None
 

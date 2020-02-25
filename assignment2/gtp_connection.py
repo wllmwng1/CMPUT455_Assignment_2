@@ -185,7 +185,12 @@ class GtpConnection():
         """
         Reset the game with new boardsize args[0]
         """
-        self.reset(int(args[0]))
+        board_size = int(args[0])
+        
+        self.reset(board_size)
+        if (board_size != self.tt.size):
+            self.tt = TranspositionTable(board_size)
+        
         self.respond()
 
     def showboard_cmd(self, args):
