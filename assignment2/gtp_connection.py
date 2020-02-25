@@ -34,7 +34,7 @@ class GtpConnection():
         self.go_engine = go_engine
         self.board = board
         self.timelimit = 1
-        self.depth = 15
+        self.depth = self.board.size * self.board.size
         self.tt = TranspositionTable(self.board.size)
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
@@ -153,6 +153,7 @@ class GtpConnection():
         Reset the board to empty board of given size
         """
         self.board.reset(size)
+        self.depth = size * size
 
     def board2d(self):
         return str(GoBoardUtil.get_twoD_board(self.board))
